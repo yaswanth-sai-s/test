@@ -1,17 +1,10 @@
-var currentTooltip;
-
-        // Function to strip HTML tags from the text
-        function stripHTMLTags(html) {
-            var tmp = document.createElement("div");
-            tmp.innerHTML = html;
-            return tmp.textContent || tmp.innerText || "";
-        }
+     var currentTooltip;
 
         function showFullText(event, text) {
             hideFullText(); // Hide any open tooltip
 
             var tooltip = document.createElement("span");
-            tooltip.textContent = text;
+            tooltip.textContent = stripHTMLTags(text);
 
             tooltip.style.position = "fixed";
             tooltip.style.backgroundColor = "#555";
@@ -22,24 +15,19 @@ var currentTooltip;
             tooltip.style.opacity = "0";
             tooltip.style.transition = "opacity 0.3s";
 
-            document.body.appendChild(tooltip);
-
-            // Calculate the tooltip's width
-            var tooltipWidth = tooltip.getBoundingClientRect().width;
-
-            // Calculate the appropriate position for the tooltip
-            var positionTop = event.pageY - tooltip.offsetHeight - 10;
+            var positionTop = event.pageY - tooltip.offsetHeight - 10; // Show tooltip above the cursor
             var positionLeft = event.pageX + 10;
-            var positionRight = positionLeft + tooltipWidth;
 
             // Adjust tooltip position if it goes beyond the viewport width
             var viewportWidth = window.innerWidth;
-            if (positionRight > viewportWidth - 10) {
-                positionLeft = viewportWidth - tooltipWidth - 10;
+            if (positionLeft + tooltip.offsetWidth > viewportWidth - 10) {
+                positionLeft = viewportWidth - tooltip.offsetWidth - 10;
             }
 
             tooltip.style.top = positionTop + "px";
             tooltip.style.left = positionLeft + "px";
+
+            document.body.appendChild(tooltip);
 
             // Set the tooltip to be visible
             setTimeout(function() {
@@ -48,6 +36,12 @@ var currentTooltip;
 
             // Store the current tooltip
             currentTooltip = tooltip;
+        }
+
+        function stripHTMLTags(html) {
+            var tmp = document.createElement("div");
+            tmp.innerHTML = html;
+            return tmp.textContent || tmp.innerText || "";
         }
 
         function hideFullText() {
