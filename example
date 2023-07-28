@@ -2,66 +2,34 @@
 <html>
 <head>
     <title>Hover Display Text</title>
-    <style>
-        .truncated-text {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 400px; /* Adjust the maximum width to your preference */
-            display: inline-block;
-            position: relative;
-        }
-
-        .tooltip {
-            visibility: hidden;
-            background-color: #555;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 5px;
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .tooltip p {
-            margin: 0;
-            padding: 5px;
-        }
-
-        .truncated-text:hover .tooltip {
-            visibility: visible;
-            opacity: 1;
-        }
-    </style>
 </head>
 <body>
     <div>
         {% for item in items %}
             {% with full_text="This is the concatenated text with the full content: " %}
-                <span class="truncated-text" onmouseover="showFullText('{{ item.text|escapejs }}', {{ forloop.counter0 }})" onmouseout="hideFullText({{ forloop.counter0 }})">{{ full_text|safe }}{{ item.text|truncatechars:50 }}
-                    <span class="tooltip" id="tooltipText{{ forloop.counter0 }}">
-                        <p>{{ item.text }}</p>
-                    </span>
-                </span>
+                <span class="truncated-text" onmouseover="showFullText(event, '{{ item.text|escapejs }}')" onmouseout="hideFullText()">{{ full_text|safe }}{{ item.text|truncatechars:50 }}</span>
             {% endwith %}
         {% endfor %}
     </div>
 
-    <!-- JavaScript functions -->
+    <!-- JavaScript code -->
     <script>
-        function showFullText(text, index) {
-            var tooltipText = document.getElementById("tooltipText" + index);
-            tooltipText.style.visibility = "visible";
-        }
+        function showFullText(event, text) {
+            var tooltip = document.createElement("span");
+            tooltip.textContent = text;
 
-        function hideFullText(index) {
-            var tooltipText = document.getElementById("tooltipText" + index);
-            tooltipText.style.visibility = "hidden";
-        }
-    </script>
-</body>
-</html>
+            tooltip.style.position = "fixed";
+            tooltip.style.backgroundColor = "#555";
+            tooltip.style.color = "#fff";
+            tooltip.style.textAlign = "center";
+            tooltip.style.borderRadius = "6px";
+            tooltip.style.padding = "5px";
+            tooltip.style.opacity = "0";
+            tooltip.style.transition = "opacity 0.3s";
+
+            var positionTop = event.pageY + 10; // Adjust the tooltip position as needed
+            var positionLeft = event.pageX + 10; // Adjust the tooltip position as needed
+
+            tooltip.style.top = positionTop + "px";
+            tooltip.style.left = positionLeft + "px";
+
