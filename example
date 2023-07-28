@@ -9,15 +9,11 @@
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 400px; /* Adjust the maximum width to your preference */
-        }
-
-        /* Add tooltip styling */
-        .tooltip {
-            position: relative;
             display: inline-block;
+            position: relative;
         }
 
-        .tooltip .tooltiptext {
+        .tooltip {
             visibility: hidden;
             width: auto;
             background-color: #555;
@@ -27,14 +23,14 @@
             padding: 5px;
             position: absolute;
             z-index: 1;
-            bottom: 100%;
+            top: 100%;
             left: 50%;
             transform: translateX(-50%);
             opacity: 0;
             transition: opacity 0.3s;
         }
 
-        .tooltip:hover .tooltiptext {
+        .truncated-text:hover .tooltip {
             visibility: visible;
             opacity: 1;
         }
@@ -43,30 +39,24 @@
 <body>
     <div>
         {% with full_text="This is the concatenated text with the full content: " %}
-            <div class="tooltip">
-                <span class="truncated-text" id="truncatedText" onmouseover="showFullText(this, '{{ text|escapejs }}')" onmouseout="hideFullText()">{{ full_text|safe }}{{ text|truncatechars:50 }}</span>
-                <span class="tooltiptext" id="tooltipText"></span>
-            </div>
+            <span class="truncated-text" onmouseover="showFullText(this, '{{ text|escapejs }}')" onmouseout="hideFullText()">{{ full_text|safe }}{{ text|truncatechars:50 }}
+                <span class="tooltip" id="tooltipText"></span>
+            </span>
         {% endwith %}
     </div>
 
     <!-- Add the JavaScript code to handle the hover events -->
     <script>
         function showFullText(element, text) {
-            var tooltipText = document.getElementById("tooltipText");
+            var tooltipText = element.querySelector(".tooltip");
             tooltipText.textContent = text;
-
-            // Calculate the position of the tooltip relative to the comment
-            var elementRect = element.getBoundingClientRect();
-            var containerRect = element.closest("div").getBoundingClientRect();
-            var tooltipHeight = tooltipText.clientHeight;
-            var positionTop = elementRect.top - containerRect.top - tooltipHeight - 5; // Adjust the 5-pixel gap
-            tooltipText.style.top = positionTop + "px";
+            tooltipText.style.visibility = "visible";
         }
 
         function hideFullText() {
             var tooltipText = document.getElementById("tooltipText");
             tooltipText.textContent = "";
+            tooltipText.style.visibility = "hidden";
         }
     </script>
 </body>
