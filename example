@@ -1,5 +1,12 @@
 var currentTooltip;
 
+        // Function to strip HTML tags from the text
+        function stripHTMLTags(html) {
+            var tmp = document.createElement("div");
+            tmp.innerHTML = html;
+            return tmp.textContent || tmp.innerText || "";
+        }
+
         function showFullText(event, text) {
             hideFullText(); // Hide any open tooltip
 
@@ -15,25 +22,24 @@ var currentTooltip;
             tooltip.style.opacity = "0";
             tooltip.style.transition = "opacity 0.3s";
 
-            var viewportWidth = window.innerWidth;
-            var viewportHeight = window.innerHeight;
-            var tooltipWidth = tooltip.clientWidth;
-            var tooltipHeight = tooltip.clientHeight;
+            document.body.appendChild(tooltip);
+
+            // Calculate the tooltip's width
+            var tooltipWidth = tooltip.getBoundingClientRect().width;
 
             // Calculate the appropriate position for the tooltip
-            var positionTop = event.pageY + 10;
+            var positionTop = event.pageY - tooltip.offsetHeight - 10;
             var positionLeft = event.pageX + 10;
-            if (positionTop + tooltipHeight > viewportHeight) {
-                positionTop = event.pageY - tooltipHeight - 10;
-            }
-            if (positionLeft + tooltipWidth > viewportWidth) {
-                positionLeft = event.pageX - tooltipWidth - 10;
+            var positionRight = positionLeft + tooltipWidth;
+
+            // Adjust tooltip position if it goes beyond the viewport width
+            var viewportWidth = window.innerWidth;
+            if (positionRight > viewportWidth - 10) {
+                positionLeft = viewportWidth - tooltipWidth - 10;
             }
 
             tooltip.style.top = positionTop + "px";
             tooltip.style.left = positionLeft + "px";
-
-            document.body.appendChild(tooltip);
 
             // Set the tooltip to be visible
             setTimeout(function() {
