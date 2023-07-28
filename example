@@ -1,14 +1,47 @@
-.tooltip {
-            position: fixed;
-            background-color: #555;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 5px;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0s linear 0.3s; /* Delay visibility change */
-            max-width: 400px; /* Maximum width of the tooltip */
-            max-height: 300px; /* Maximum height of the tooltip */
-            overflow: auto; /* Add scroll to the tooltip */
+var tooltip = document.createElement("span");
+        tooltip.classList.add("tooltip");
+        document.body.appendChild(tooltip);
+
+        function showFullText(event, element, text) {
+            // Calculate the position of the truncated text relative to the viewport
+            var textRect = element.getBoundingClientRect();
+            var textPositionTop = textRect.top + window.pageYOffset;
+            var textPositionLeft = textRect.left + window.pageXOffset;
+
+            // Calculate the position of the tooltip
+            var tooltipTop = textPositionTop - tooltip.offsetHeight - 10;
+            var tooltipLeft = textPositionLeft + textRect.width / 2 - tooltip.offsetWidth / 2;
+
+            // Adjust tooltip position to fit within the viewport
+            if (tooltipLeft < 10) {
+                tooltipLeft = 10;
+            } else if (tooltipLeft + tooltip.offsetWidth > window.innerWidth - 10) {
+                tooltipLeft = window.innerWidth - tooltip.offsetWidth - 10;
+            }
+
+            // Set the position of the tooltip
+            tooltip.style.top = tooltipTop + "px";
+            tooltip.style.left = tooltipLeft + "px";
+
+            tooltip.textContent = stripHTMLTags(text);
+            tooltip.style.visibility = "visible"; // Make tooltip visible immediately
+            tooltip.style.opacity = "1"; // Fade-in effect
         }
+
+        function stripHTMLTags(html) {
+            var tmp = document.createElement("div");
+            tmp.innerHTML = html;
+            return tmp.textContent || tmp.innerText || "";
+        }
+
+        function hideFullText() {
+            tooltip.style.opacity = "0"; // Fade-out effect
+            tooltip.style.visibility = "hidden"; // Hide after fade-out
+        }
+
+        // Hide tooltip on body click
+        document.body.addEventListener("click", function (event) {
+            if (!event.target.classList.contains("truncated-text")) {
+                hideFullText();
+            }
+        });
