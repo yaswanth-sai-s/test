@@ -33,3 +33,29 @@
             tooltip.style.top = positionTop + "px";
             tooltip.style.left = positionLeft + "px";
 
+            document.body.appendChild(tooltip);
+
+            // Set the tooltip to be visible
+            setTimeout(function() {
+                tooltip.style.opacity = "1";
+            }, 1);
+
+            // Store the tooltip element in a data attribute of the truncated-text span
+            event.currentTarget.dataset.tooltip = tooltip;
+        }
+
+        function hideFullText() {
+            var tooltip = event.currentTarget.dataset.tooltip;
+            if (tooltip) {
+                // Set the tooltip to be hidden
+                tooltip.style.opacity = "0";
+
+                // Remove the tooltip after the transition
+                setTimeout(function() {
+                    tooltip.remove();
+                }, 300);
+            }
+        }
+    </script>
+</body>
+</html>
