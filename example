@@ -1,13 +1,46 @@
- function showFullText() {
-            var tooltipText = document.getElementById("tooltipText");
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hover Display Text</title>
+    <style>
+        /* Same CSS styles as before */
+        .truncated-text {
+            /* ... */
+        }
+
+        .tooltip {
+            /* ... */
+        }
+
+        .truncated-text:hover .tooltip {
+            /* ... */
+        }
+    </style>
+</head>
+<body>
+    <div>
+        {% for item in items %}
+            {% with full_text="This is the concatenated text with the full content: " %}
+                <span class="truncated-text" onmouseover="showFullText('{{ item.text|escapejs }}', {{ forloop.counter0 }})" onmouseout="hideFullText({{ forloop.counter0 }})">{{ full_text|safe }}{{ item.text|truncatechars:50 }}
+                    <span class="tooltip" id="tooltipText{{ forloop.counter0 }}">{{ item.text }}</span>
+                </span>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+    <!-- JavaScript functions -->
+    <script>
+        function showFullText(text, index) {
+            var tooltipText = document.getElementById("tooltipText" + index);
+            tooltipText.textContent = text;
             tooltipText.style.visibility = "visible";
         }
 
-        function hideFullText() {
-            var tooltipText = document.getElementById("tooltipText");
+        function hideFullText(index) {
+            var tooltipText = document.getElementById("tooltipText" + index);
+            tooltipText.textContent = "";
             tooltipText.style.visibility = "hidden";
         }
-
-        var truncatedText = document.querySelector(".truncated-text");
-        truncatedText.addEventListener("mouseover", showFullText);
-        truncatedText.addEventListener("mouseout", hideFullText);
+    </script>
+</body>
+</html>
