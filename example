@@ -1,63 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Hover Display Text</title>
-    <!-- Add any necessary CSS styling here -->
-    <style>
-        .truncated-text {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 400px; /* Adjust the maximum width to your preference */
-            display: inline-block;
-            position: relative;
-        }
-
-        .tooltip {
-            visibility: hidden;
-            width: auto;
-            background-color: #555;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 5px;
-            position: absolute;
-            z-index: 1;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .truncated-text:hover .tooltip {
-            visibility: visible;
-            opacity: 1;
-        }
-    </style>
-</head>
-<body>
-    <div>
-        {% with full_text="This is the concatenated text with the full content: " %}
-            <span class="truncated-text" onmouseover="showFullText(this, '{{ text|escapejs }}')" onmouseout="hideFullText()">{{ full_text|safe }}{{ text|truncatechars:50 }}
-                <span class="tooltip" id="tooltipText"></span>
-            </span>
-        {% endwith %}
-    </div>
-
-    <!-- Add the JavaScript code to handle the hover events -->
-    <script>
-        function showFullText(element, text) {
-            var tooltipText = element.querySelector(".tooltip");
-            tooltipText.textContent = text;
+ function showFullText() {
+            var tooltipText = document.getElementById("tooltipText");
             tooltipText.style.visibility = "visible";
         }
 
         function hideFullText() {
             var tooltipText = document.getElementById("tooltipText");
-            tooltipText.textContent = "";
             tooltipText.style.visibility = "hidden";
         }
-    </script>
-</body>
-</html>
+
+        var truncatedText = document.querySelector(".truncated-text");
+        truncatedText.addEventListener("mouseover", showFullText);
+        truncatedText.addEventListener("mouseout", hideFullText);
