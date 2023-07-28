@@ -15,8 +15,20 @@ var currentTooltip;
             tooltip.style.opacity = "0";
             tooltip.style.transition = "opacity 0.3s";
 
-            var positionTop = event.pageY + 10; // Adjust the tooltip position as needed
-            var positionLeft = event.pageX + 10; // Adjust the tooltip position as needed
+            var viewportWidth = window.innerWidth;
+            var viewportHeight = window.innerHeight;
+            var tooltipWidth = tooltip.clientWidth;
+            var tooltipHeight = tooltip.clientHeight;
+
+            // Calculate the appropriate position for the tooltip
+            var positionTop = event.pageY + 10;
+            var positionLeft = event.pageX + 10;
+            if (positionTop + tooltipHeight > viewportHeight) {
+                positionTop = event.pageY - tooltipHeight - 10;
+            }
+            if (positionLeft + tooltipWidth > viewportWidth) {
+                positionLeft = event.pageX - tooltipWidth - 10;
+            }
 
             tooltip.style.top = positionTop + "px";
             tooltip.style.left = positionLeft + "px";
