@@ -1,20 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Hover Display Text</title>
-</head>
-<body>
-    <div>
-        {% for item in items %}
-            {% with full_text="This is the concatenated text with the full content: " %}
-                <span class="truncated-text" onmouseover="showFullText(event, '{{ item.text|escapejs }}')" onmouseout="hideFullText()">{{ full_text|safe }}{{ item.text|truncatechars:50 }}</span>
-            {% endwith %}
-        {% endfor %}
-    </div>
+var currentTooltip;
 
-    <!-- JavaScript code -->
-    <script>
         function showFullText(event, text) {
+            hideFullText(); // Hide any open tooltip
+
             var tooltip = document.createElement("span");
             tooltip.textContent = text;
 
@@ -40,22 +28,21 @@
                 tooltip.style.opacity = "1";
             }, 1);
 
-            // Store the tooltip element in a data attribute of the truncated-text span
-            event.currentTarget.dataset.tooltip = tooltip;
+            // Store the current tooltip
+            currentTooltip = tooltip;
         }
 
         function hideFullText() {
-            var tooltip = event.currentTarget.dataset.tooltip;
-            if (tooltip) {
+            if (currentTooltip) {
                 // Set the tooltip to be hidden
-                tooltip.style.opacity = "0";
+                currentTooltip.style.opacity = "0";
 
                 // Remove the tooltip after the transition
                 setTimeout(function() {
-                    tooltip.remove();
+                    currentTooltip.remove();
                 }, 300);
+
+                // Reset currentTooltip variable
+                currentTooltip = null;
             }
         }
-    </script>
-</body>
-</html>
