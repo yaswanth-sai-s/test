@@ -4,35 +4,26 @@ var currentTooltip;
             hideFullText(); // Hide any open tooltip
 
             var tooltip = document.createElement("span");
-            tooltip.textContent = stripHTMLTags(text);
-
-            tooltip.style.position = "fixed";
-            tooltip.style.backgroundColor = "#555";
-            tooltip.style.color = "#fff";
-            tooltip.style.textAlign = "center";
-            tooltip.style.borderRadius = "6px";
-            tooltip.style.padding = "5px";
-            tooltip.style.opacity = "0";
-            tooltip.style.transition = "opacity 0.3s";
-
-            var positionTop = event.pageY - tooltip.offsetHeight - 10; // Show tooltip above the cursor
-            var positionLeft = event.pageX + 10;
+            tooltip.innerHTML = text;
+            tooltip.classList.add("tooltip");
 
             // Calculate the position of the truncated text relative to the viewport
             var textRect = event.target.getBoundingClientRect();
             var textPositionTop = textRect.top + window.pageYOffset;
             var textPositionLeft = textRect.left + window.pageXOffset;
 
-            // Adjust tooltip position based on the truncated text's position
+            // Calculate the position of the tooltip
             var tooltipTop = textPositionTop - tooltip.offsetHeight - 10;
-            if (tooltipTop < 0) {
-                tooltipTop = textPositionTop + textRect.height + 10;
-            }
             var tooltipLeft = textPositionLeft + textRect.width / 2 - tooltip.offsetWidth / 2;
-            if (tooltipLeft + tooltip.offsetWidth > window.innerWidth) {
+
+            // Adjust tooltip position to fit within the viewport
+            if (tooltipLeft < 10) {
+                tooltipLeft = 10;
+            } else if (tooltipLeft + tooltip.offsetWidth > window.innerWidth - 10) {
                 tooltipLeft = window.innerWidth - tooltip.offsetWidth - 10;
             }
 
+            // Set the position of the tooltip
             tooltip.style.top = tooltipTop + "px";
             tooltip.style.left = tooltipLeft + "px";
 
