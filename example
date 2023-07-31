@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Hover Display Text</title>
+    <link rel="stylesheet" href="path/to/simplemde.min.css">
     <style>
         .tooltip {
             position: fixed;
@@ -22,51 +23,71 @@
 <body>
     <div>
         {% for item in items %}
-            {% with full_text="This is the concatenated text with the full content: " %}
-                <span
-                    class="truncated-text"
-                    onmouseover="showFullText(event, this, '{{ item.text|safe }}')"
-                    onmouseout="hideFullText()"
-                >
-                    {{ full_text|safe }}{{ item.text|truncatechars:50 }}
-                </span>
-                <div class="hidden-content" style="display: none;">{{ item.text|safe }}</div>
-            {% endwith %}
+            <span class="truncated-text" data-full-text="{{ item.text|safe }}">
+                {{ item.text|truncatechars:50 }}
+            </span>
         {% endfor %}
     </div>
 
     <!-- JavaScript code -->
+    <script src="path/to/simplemde.min.js"></script>
     <script>
         var tooltip = document.createElement("div");
         tooltip.classList.add("tooltip");
         document.body.appendChild(tooltip);
 
-        function showFullText(event, element, text) {
-            // Calculate the position of the truncated text relative to the viewport
-            var textRect = element.getBoundingClientRect();
-            var textPositionTop = textRect.top + window.pageYOffset;
-            var textPositionLeft = textRect.left + window.pageXOffset;
+        var activeSimpleMDE = null;
+
+        function showFullText(event) {
+            var truncatedText = event.target;
+            var fullText = truncatedText.getAttribute("data-full-text");
+
+            // Calculate the position of the mouse cursor
+            var mouseX = event.clientX;
+            var mouseY = event.clientY;
 
             // Set the position of the tooltip
-            tooltip.style.top = textPositionTop - tooltip.offsetHeight - 10 + "px";
-            tooltip.style.left = textPositionLeft + textRect.width / 2 - tooltip.offsetWidth / 2 + "px";
+            tooltip.style.top = mouseY + "px";
+            tooltip.style.left = mouseX + "px";
 
-            // Strip HTML tags from the text and update the tooltip content
-            tooltip.textContent = stripHTMLTags(text);
+            if (!activeSimpleMDE) {
+                activeSimpleMDE = new SimpleMDE({
+                    element: tooltip,
+                    spellChecker: false,
+                    toolbar: false,
+                    status: false,
+                    parsingConfig: {
+                        allowAtxHeaderWithoutSpace: true,
+                        underscoresBreakWords: true,
+                    },
+                });
+            }
 
-            tooltip.style.visibility = "visible"; // Make tooltip visible immediately
-            tooltip.style.opacity = "1"; // Fade-in effect
-        }
+            // Render the Markdown text using SimpleMDE
+            activeSimpleMDE.value(fullText);
 
-        function stripHTMLTags(html) {
-            var strippedText = html.replace(/<[^>]+>/g, '');
-            return strippedText;
+            // Display the tooltip
+            tooltip.style.visibility = "visible";
+            tooltip.style.opacity = "1";
         }
 
         function hideFullText() {
             tooltip.style.opacity = "0"; // Fade-out effect
             tooltip.style.visibility = "hidden"; // Hide after fade-out
         }
+
+        // Event delegation to handle multiple truncated-text elements
+        document.addEventListener("mouseover", function (event) {
+            if (event.target.classList.contains("truncated-text")) {
+                showFullText(event);
+            }
+        });
+
+        document.addEventListener("mouseout", function (event) {
+            if (event.target.classList.contains("truncated-text")) {
+                hideFullText();
+            }
+        });
     </script>
 </body>
 </html>
