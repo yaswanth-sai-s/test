@@ -81,9 +81,15 @@
             tooltip.style.visibility = "hidden"; // Hide after fade-out
 
             // Clear the tooltip content when hidden
-            activeSimpleMDE.value("");
-
-            activeSimpleMDE = null;
+            if (activeSimpleMDE) {
+                activeSimpleMDE.toTextArea(); // Destroy the SimpleMDE instance
+                activeSimpleMDE = null;
+                // Remove the temporary textarea element from the document
+                var textarea = document.querySelector(".CodeMirror textarea");
+                if (textarea) {
+                    textarea.parentNode.removeChild(textarea);
+                }
+            }
         }
 
         // Hide tooltip if the mouse moves out of the current target element
