@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Hover Display Rich Text</title>
-    <link rel="stylesheet" href="path/to/simplemde.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/turndown@7.0.0/dist/turndown.js"></script>
     <style>
         .truncated-text {
             position: relative;
@@ -34,6 +34,17 @@
             visibility: visible;
             opacity: 1;
         }
+
+        .rich-text-popup {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 10px;
+            z-index: 9999;
+            max-width: 400px;
+        }
     </style>
 </head>
 <body>
@@ -48,76 +59,42 @@
         </span>
     {% endfor %}
 
-    <!-- JavaScript code -->
-    <script src="path/to/simplemde.min.js"></script>
-    <script>
-        var tooltip = document.createElement("div");
-        tooltip.className = "tooltip";
-        document.body.appendChild(tooltip);
+    <div class="rich-text-popup" id="richTextPopup" contenteditable="true"></div>
 
-        var activeSimpleMDE = null;
+    <!-- JavaScript code -->
+    <script>
+        var richTextPopup = document.getElementById("richTextPopup");
+        var turndownService = new TurndownService();
 
         function showFullText(element) {
             var truncatedText = element;
             var fullText = truncatedText.getAttribute("data-full-text");
 
-            // Set the position of the tooltip
+            // Set the position of the rich text popup
             var rect = truncatedText.getBoundingClientRect();
-            tooltip.style.top = (rect.top + window.scrollY) + "px";
-            tooltip.style.left = (rect.left + window.scrollX) + "px";
+            richTextPopup.style.top = (rect.top + window.scrollY + 20) + "px";
+            richTextPopup.style.left = (rect.left + window.scrollX) + "px";
 
-            if (!activeSimpleMDE) {
-                // Create a temporary textarea element to use for SimpleMDE
-                var textarea = document.createElement("textarea");
-                textarea.style.display = "none";
-                tooltip.appendChild(textarea);
+            // Convert the HTML content to Markdown and display in the popup
+            richTextPopup.innerHTML = turndownService.turndown(fullText);
 
-                activeSimpleMDE = new SimpleMDE({
-                    element: textarea,
-                    spellChecker: false,
-                    toolbar: false,
-                    status: false,
-                    parsingConfig: {
-                        allowAtxHeaderWithoutSpace: true,
-                        underscoresBreakWords: true,
-                    },
-                });
-            }
-
-            // Render the Markdown text using SimpleMDE
-            activeSimpleMDE.value(fullText);
-
-            // Display the tooltip
-            tooltip.style.visibility = "visible";
-            tooltip.style.opacity = "1";
+            // Display the rich text popup
+            richTextPopup.style.display = "block";
         }
 
         function hideFullText() {
-            tooltip.style.opacity = "0"; // Fade-out effect
-            tooltip.style.visibility = "hidden"; // Hide after fade-out
-
-            // Clear the tooltip content when hidden
-            if (activeSimpleMDE) {
-                activeSimpleMDE.toTextArea(); // Destroy the SimpleMDE instance
-                // Remove the temporary textarea element from the tooltip
-                var textarea = tooltip.querySelector(".CodeMirror textarea");
-                if (textarea) {
-                    tooltip.removeChild(textarea);
-                }
-            }
+            // Hide the rich text popup
+            richTextPopup.style.display = "none";
         }
 
-        // Hide tooltip if the mouse moves out of the current target element
+        // Hide the rich text popup if the mouse moves out of the current target element
         document.addEventListener("mousemove", function (event) {
-            var tooltipRect = tooltip.getBoundingClientRect();
+            var popupRect = richTextPopup.getBoundingClientRect();
             if (
-                activeSimpleMDE &&
-                (
-                    event.clientX < tooltipRect.left ||
-                    event.clientX > tooltipRect.right ||
-                    event.clientY < tooltipRect.top ||
-                    event.clientY > tooltipRect.bottom
-                )
+                event.clientX < popupRect.left ||
+                event.clientX > popupRect.right ||
+                event.clientY < popupRect.top ||
+                event.clientY > popupRect.bottom
             ) {
                 hideFullText();
             }
