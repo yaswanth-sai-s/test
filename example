@@ -33,55 +33,57 @@
     <!-- JavaScript code -->
     <script src="path/to/simplemde.min.js"></script>
     <script>
-        var tooltip = document.createElement("div");
-        tooltip.classList.add("tooltip");
-        document.body.appendChild(tooltip);
+        document.addEventListener("DOMContentLoaded", function () {
+            var tooltip = document.createElement("div");
+            tooltip.classList.add("tooltip");
+            document.body.appendChild(tooltip);
 
-        var activeSimpleMDE = null;
+            var activeSimpleMDE = null;
 
-        function showFullText(event) {
-            var truncatedText = event.target;
-            var fullText = truncatedText.getAttribute("data-full-text");
+            function showFullText(event) {
+                var truncatedText = event.target;
+                var fullText = truncatedText.getAttribute("data-full-text");
 
-            // Calculate the position of the mouse cursor
-            var mouseX = event.clientX;
-            var mouseY = event.clientY;
+                // Calculate the position of the mouse cursor
+                var mouseX = event.clientX;
+                var mouseY = event.clientY;
 
-            // Set the position of the tooltip
-            tooltip.style.top = mouseY + "px";
-            tooltip.style.left = mouseX + "px";
+                // Set the position of the tooltip
+                tooltip.style.top = mouseY + "px";
+                tooltip.style.left = mouseX + "px";
 
-            if (!activeSimpleMDE) {
-                activeSimpleMDE = new SimpleMDE({
-                    element: tooltip,
-                    spellChecker: false,
-                    toolbar: false,
-                    status: false,
-                    parsingConfig: {
-                        allowAtxHeaderWithoutSpace: true,
-                        underscoresBreakWords: true,
-                    },
-                });
+                if (!activeSimpleMDE) {
+                    activeSimpleMDE = new SimpleMDE({
+                        element: tooltip,
+                        spellChecker: false,
+                        toolbar: false,
+                        status: false,
+                        parsingConfig: {
+                            allowAtxHeaderWithoutSpace: true,
+                            underscoresBreakWords: true,
+                        },
+                    });
+                }
+
+                // Render the Markdown text using SimpleMDE
+                activeSimpleMDE.value(fullText);
+
+                // Display the tooltip
+                tooltip.style.visibility = "visible";
+                tooltip.style.opacity = "1";
             }
 
-            // Render the Markdown text using SimpleMDE
-            activeSimpleMDE.value(fullText);
+            function hideFullText() {
+                tooltip.style.opacity = "0"; // Fade-out effect
+                tooltip.style.visibility = "hidden"; // Hide after fade-out
+            }
 
-            // Display the tooltip
-            tooltip.style.visibility = "visible";
-            tooltip.style.opacity = "1";
-        }
-
-        function hideFullText() {
-            tooltip.style.opacity = "0"; // Fade-out effect
-            tooltip.style.visibility = "hidden"; // Hide after fade-out
-        }
-
-        // Add event listeners to all truncated-text elements
-        var truncatedTexts = document.querySelectorAll(".truncated-text");
-        truncatedTexts.forEach(function (truncatedText) {
-            truncatedText.addEventListener("mouseenter", showFullText);
-            truncatedText.addEventListener("mouseleave", hideFullText);
+            // Add event listeners to all truncated-text elements
+            var truncatedTexts = document.querySelectorAll(".truncated-text");
+            truncatedTexts.forEach(function (truncatedText) {
+                truncatedText.addEventListener("mouseenter", showFullText);
+                truncatedText.addEventListener("mouseleave", hideFullText);
+            });
         });
     </script>
 </body>
