@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Hover Display Text</title>
+    <link rel="stylesheet" href="path/to/simplemde.min.css">
     <style>
         .tooltip {
             position: absolute;
@@ -35,9 +36,10 @@
     <div class="tooltip" id="tooltip"></div>
 
     <!-- JavaScript code -->
+    <script src="path/to/simplemde.min.js"></script>
     <script>
         var tooltip = document.getElementById("tooltip");
-        var activeTooltipTarget = null;
+        var activeSimpleMDE = null;
 
         function showFullText(element) {
             var truncatedText = element;
@@ -48,14 +50,30 @@
             tooltip.style.top = (rect.top + window.scrollY) + "px";
             tooltip.style.left = (rect.left + window.scrollX) + "px";
 
-            // Set the tooltip content to the full text
-            tooltip.textContent = fullText;
+            if (!activeSimpleMDE) {
+                // Create a temporary textarea element to use for SimpleMDE
+                var textarea = document.createElement("textarea");
+                textarea.style.display = "none";
+                document.body.appendChild(textarea);
+
+                activeSimpleMDE = new SimpleMDE({
+                    element: textarea,
+                    spellChecker: false,
+                    toolbar: false,
+                    status: false,
+                    parsingConfig: {
+                        allowAtxHeaderWithoutSpace: true,
+                        underscoresBreakWords: true,
+                    },
+                });
+            }
+
+            // Render the Markdown text using SimpleMDE
+            activeSimpleMDE.value(fullText);
 
             // Display the tooltip
             tooltip.style.visibility = "visible";
             tooltip.style.opacity = "1";
-
-            activeTooltipTarget = truncatedText;
         }
 
         function hideFullText() {
@@ -63,14 +81,23 @@
             tooltip.style.visibility = "hidden"; // Hide after fade-out
 
             // Clear the tooltip content when hidden
-            tooltip.textContent = "";
+            activeSimpleMDE.value("");
 
-            activeTooltipTarget = null;
+            activeSimpleMDE = null;
         }
 
         // Hide tooltip if the mouse moves out of the current target element
         document.addEventListener("mousemove", function (event) {
-            if (activeTooltipTarget && !activeTooltipTarget.contains(event.target)) {
+            var tooltipRect = tooltip.getBoundingClientRect();
+            if (
+                activeSimpleMDE &&
+                (
+                    event.clientX < tooltipRect.left ||
+                    event.clientX > tooltipRect.right ||
+                    event.clientY < tooltipRect.top ||
+                    event.clientY > tooltipRect.bottom
+                )
+            ) {
                 hideFullText();
             }
         });
