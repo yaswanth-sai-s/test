@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Hover Display Text</title>
+    <link rel="stylesheet" href="path/to/simplemde.min.css">
     <style>
         .truncated-text {
             position: relative;
@@ -13,36 +14,63 @@
             cursor: pointer;
         }
 
-        .truncated-text:hover:after {
-            content: attr(data-full-text);
+        .tooltip {
             position: absolute;
-            top: -10px; /* Adjust the vertical position of the tooltip */
+            top: -30px; /* Adjust the vertical position of the tooltip */
             left: 100%; /* Adjust the horizontal position of the tooltip */
             background-color: #555;
             color: #fff;
             padding: 5px;
             border-radius: 6px;
-            opacity: 1;
+            opacity: 0;
             max-width: 400px; /* Maximum width of the tooltip */
             max-height: 300px; /* Maximum height of the tooltip */
             overflow: auto; /* Add scroll to the tooltip */
-            visibility: visible;
+            visibility: hidden;
             z-index: 9999; /* Set a high z-index to display above other elements */
         }
 
-        .truncated-text:hover span {
-            visibility: hidden;
+        .truncated-text:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
         }
     </style>
 </head>
 <body>
     {% for item in items %}
-        <span
-            class="truncated-text"
-            data-full-text="{{ item.text|safe }}"
-        >
+        <span class="truncated-text">
             <span>{{ item.text|truncatechars:20|safe }}</span>
+            <span class="tooltip" data-full-text="{{ item.text|safe }}"></span>
         </span>
     {% endfor %}
+
+    <!-- JavaScript code -->
+    <script src="path/to/simplemde.min.js"></script>
+    <script>
+        var tooltips = document.querySelectorAll(".tooltip");
+
+        for (var i = 0; i < tooltips.length; i++) {
+            var tooltip = tooltips[i];
+            var fullText = tooltip.getAttribute("data-full-text");
+
+            var textarea = document.createElement("textarea");
+            textarea.style.display = "none";
+            textarea.textContent = fullText;
+            document.body.appendChild(textarea);
+
+            var simpleMDE = new SimpleMDE({
+                element: tooltip,
+                initialValue: textarea.value,
+                toolbar: false,
+                status: false,
+                parsingConfig: {
+                    allowAtxHeaderWithoutSpace: true,
+                    underscoresBreakWords: true,
+                },
+            });
+
+            textarea.parentNode.removeChild(textarea);
+        }
+    </script>
 </body>
 </html>
