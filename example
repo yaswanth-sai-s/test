@@ -41,10 +41,6 @@
         tooltip.classList.add("tooltip");
         document.body.appendChild(tooltip);
 
-        var textarea = document.createElement("textarea");
-        textarea.classList.add("hidden-textarea");
-        document.body.appendChild(textarea);
-
         function showFullText(event, element, text) {
             // Calculate the position of the truncated text relative to the viewport
             var textRect = element.getBoundingClientRect();
@@ -55,20 +51,16 @@
             tooltip.style.top = textPositionTop - tooltip.offsetHeight - 10 + "px";
             tooltip.style.left = textPositionLeft + textRect.width / 2 - tooltip.offsetWidth / 2 + "px";
 
-            // Set the value of the hidden textarea with the full text content
-            textarea.value = stripHTMLTags(text);
-
-            // Display the content of the textarea inside the tooltip
-            tooltip.textContent = textarea.value;
+            // Strip HTML tags from the text and update the tooltip content
+            tooltip.textContent = stripHTMLTags(text);
 
             tooltip.style.visibility = "visible"; // Make tooltip visible immediately
             tooltip.style.opacity = "1"; // Fade-in effect
         }
 
         function stripHTMLTags(html) {
-            var tmp = document.createElement("div");
-            tmp.innerHTML = html;
-            return tmp.textContent || tmp.innerText || "";
+            var strippedText = html.replace(/<[^>]+>/g, '');
+            return strippedText;
         }
 
         function hideFullText() {
