@@ -59,7 +59,7 @@
         </span>
     {% endfor %}
 
-    <div class="rich-text-popup" id="richTextPopup" contenteditable="true"></div>
+    <div class="rich-text-popup" id="richTextPopup"></div>
 
     <!-- JavaScript code -->
     <script>
@@ -76,7 +76,10 @@
             richTextPopup.style.left = (rect.left + window.scrollX) + "px";
 
             // Convert the HTML content to Markdown and display in the popup
-            richTextPopup.innerHTML = turndownService.turndown(fullText);
+            var tempDiv = document.createElement('div');
+            tempDiv.innerHTML = fullText;
+            var parsedContent = tempDiv.textContent;
+            richTextPopup.textContent = parsedContent;
 
             // Display the rich text popup
             richTextPopup.style.display = "block";
