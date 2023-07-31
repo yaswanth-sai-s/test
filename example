@@ -1,4 +1,36 @@
-var tooltip = document.createElement("span");
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hover Display Text</title>
+    <style>
+        .tooltip {
+            position: fixed;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0s linear 0.3s; /* Delay visibility change */
+            max-width: 400px; /* Maximum width of the tooltip */
+            max-height: 300px; /* Maximum height of the tooltip */
+            overflow: auto; /* Add scroll to the tooltip */
+        }
+    </style>
+</head>
+<body>
+    <div>
+        {% for item in items %}
+            {% with full_text="This is the concatenated text with the full content: " %}
+                <span class="truncated-text" onmouseenter="showFullText(event, this, '{{ item.text|safe }}')" onmouseleave="hideFullText()">{{ full_text|safe }}{{ item.text|truncatechars:50 }}</span>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+    <!-- JavaScript code -->
+    <script>
+        var tooltip = document.createElement("span");
         tooltip.classList.add("tooltip");
         document.body.appendChild(tooltip);
 
@@ -38,10 +70,6 @@ var tooltip = document.createElement("span");
             tooltip.style.opacity = "0"; // Fade-out effect
             tooltip.style.visibility = "hidden"; // Hide after fade-out
         }
-
-        // Hide tooltip on body click
-        document.body.addEventListener("click", function (event) {
-            if (!event.target.classList.contains("truncated-text")) {
-                hideFullText();
-            }
-        });
+    </script>
+</body>
+</html>
