@@ -17,13 +17,20 @@
             max-height: 300px; /* Maximum height of the tooltip */
             overflow: auto; /* Add scroll to the tooltip */
         }
+        .read-more {
+            cursor: pointer;
+            color: #fff;
+            font-size: 12px;
+            text-decoration: underline;
+            display: block;
+        }
     </style>
 </head>
 <body>
     <div>
         {% for item in items %}
             {% with full_text="This is the concatenated text with the full content: " %}
-                <span class="truncated-text" onmouseenter="showFullText(event, this, '{{ item.text|safe }}')" onmouseleave="hideFullText()">{{ full_text|safe }}{{ item.text|truncatechars:50 }}</span>
+                <span class="truncated-text" onmouseenter="showFullText(event, this, '{{ item.text|safe }}')">{{ full_text|safe }}{{ item.text|truncatechars:50 }}</span>
             {% endwith %}
         {% endfor %}
     </div>
@@ -55,9 +62,16 @@
             tooltip.style.top = tooltipTop + "px";
             tooltip.style.left = tooltipLeft + "px";
 
-            tooltip.textContent = stripHTMLTags(text);
+            // Set tooltip content with "Read More" link
+            tooltip.innerHTML = `${text.substr(0, 500)}<span class="read-more" onclick="showFullTooltipContent(event, this, '${text}')">... Read More</span>`;
+
             tooltip.style.visibility = "visible"; // Make tooltip visible immediately
             tooltip.style.opacity = "1"; // Fade-in effect
+        }
+
+        function showFullTooltipContent(event, element, fullContent) {
+            event.stopPropagation();
+            tooltip.innerHTML = fullContent;
         }
 
         function stripHTMLTags(html) {
