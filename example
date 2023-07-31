@@ -21,13 +21,16 @@
     </style>
 </head>
 <body>
-    <div>
-        {% for item in items %}
-            <span class="truncated-text" data-full-text="{{ item.text|safe }}">
-                {{ item.text|truncatechars:50 }}
-            </span>
-        {% endfor %}
-    </div>
+    {% for item in items %}
+        <span
+            class="truncated-text"
+            data-full-text="{{ item.text|safe }}"
+            onmouseover="showFullText(event, this)"
+            onmouseout="hideFullText()"
+        >
+            {{ item.text|truncatechars:50 }}
+        </span>
+    {% endfor %}
 
     <!-- JavaScript code -->
     <script src="path/to/simplemde.min.js"></script>
@@ -38,8 +41,8 @@
 
         var activeSimpleMDE = null;
 
-        function showFullText(event) {
-            var truncatedText = event.target;
+        function showFullText(event, element) {
+            var truncatedText = element;
             var fullText = truncatedText.getAttribute("data-full-text");
 
             // Calculate the position of the mouse cursor
@@ -75,19 +78,6 @@
             tooltip.style.opacity = "0"; // Fade-out effect
             tooltip.style.visibility = "hidden"; // Hide after fade-out
         }
-
-        // Event delegation to handle multiple truncated-text elements
-        document.addEventListener("mouseover", function (event) {
-            if (event.target.classList.contains("truncated-text")) {
-                showFullText(event);
-            }
-        });
-
-        document.addEventListener("mouseout", function (event) {
-            if (event.target.classList.contains("truncated-text")) {
-                hideFullText();
-            }
-        });
     </script>
 </body>
 </html>
