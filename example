@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="path/to/simplemde.min.css">
     <style>
         .tooltip {
-            position: fixed;
+            position: absolute;
             background-color: #555;
             color: #fff;
             text-align: center;
@@ -17,6 +17,7 @@
             max-width: 400px; /* Maximum width of the tooltip */
             max-height: 300px; /* Maximum height of the tooltip */
             overflow: auto; /* Add scroll to the tooltip */
+            z-index: 9999; /* Set a high z-index to display above other elements */
         }
     </style>
 </head>
@@ -25,6 +26,8 @@
         <span
             class="truncated-text"
             data-full-text="{{ item.text|safe }}"
+            onmouseover="showFullText(this)"
+            onmouseout="hideFullText()"
         >
             {{ item.text|truncatechars:50 }}
         </span>
@@ -33,58 +36,46 @@
     <!-- JavaScript code -->
     <script src="path/to/simplemde.min.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            var tooltip = document.createElement("div");
-            tooltip.classList.add("tooltip");
-            document.body.appendChild(tooltip);
+        var tooltip = document.createElement("div");
+        tooltip.classList.add("tooltip");
+        document.body.appendChild(tooltip);
 
-            var activeSimpleMDE = null;
+        var activeSimpleMDE = null;
 
-            function showFullText(event) {
-                var truncatedText = event.target;
-                var fullText = truncatedText.getAttribute("data-full-text");
+        function showFullText(element) {
+            var truncatedText = element;
+            var fullText = truncatedText.getAttribute("data-full-text");
 
-                // Calculate the position of the mouse cursor
-                var mouseX = event.clientX;
-                var mouseY = event.clientY;
+            // Set the position of the tooltip
+            var rect = truncatedText.getBoundingClientRect();
+            tooltip.style.top = rect.top + "px";
+            tooltip.style.left = rect.left + "px";
 
-                // Set the position of the tooltip
-                tooltip.style.top = mouseY + "px";
-                tooltip.style.left = mouseX + "px";
-
-                if (!activeSimpleMDE) {
-                    activeSimpleMDE = new SimpleMDE({
-                        element: tooltip,
-                        spellChecker: false,
-                        toolbar: false,
-                        status: false,
-                        parsingConfig: {
-                            allowAtxHeaderWithoutSpace: true,
-                            underscoresBreakWords: true,
-                        },
-                    });
-                }
-
-                // Render the Markdown text using SimpleMDE
-                activeSimpleMDE.value(fullText);
-
-                // Display the tooltip
-                tooltip.style.visibility = "visible";
-                tooltip.style.opacity = "1";
+            if (!activeSimpleMDE) {
+                activeSimpleMDE = new SimpleMDE({
+                    element: tooltip,
+                    spellChecker: false,
+                    toolbar: false,
+                    status: false,
+                    parsingConfig: {
+                        allowAtxHeaderWithoutSpace: true,
+                        underscoresBreakWords: true,
+                    },
+                });
             }
 
-            function hideFullText() {
-                tooltip.style.opacity = "0"; // Fade-out effect
-                tooltip.style.visibility = "hidden"; // Hide after fade-out
-            }
+            // Render the Markdown text using SimpleMDE
+            activeSimpleMDE.value(fullText);
 
-            // Add event listeners to all truncated-text elements
-            var truncatedTexts = document.querySelectorAll(".truncated-text");
-            truncatedTexts.forEach(function (truncatedText) {
-                truncatedText.addEventListener("mouseenter", showFullText);
-                truncatedText.addEventListener("mouseleave", hideFullText);
-            });
-        });
+            // Display the tooltip
+            tooltip.style.visibility = "visible";
+            tooltip.style.opacity = "1";
+        }
+
+        function hideFullText() {
+            tooltip.style.opacity = "0"; // Fade-out effect
+            tooltip.style.visibility = "hidden"; // Hide after fade-out
+        }
     </script>
 </body>
 </html>
