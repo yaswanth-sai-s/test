@@ -2,7 +2,6 @@
 <html>
 <head>
     <title>Hover Display Text</title>
-    <link rel="stylesheet" href="path/to/simplemde.min.css">
     <style>
         .tooltip {
             position: absolute;
@@ -33,14 +32,12 @@
         </span>
     {% endfor %}
 
-    <!-- JavaScript code -->
-    <script src="path/to/simplemde.min.js"></script>
-    <script>
-        var tooltip = document.createElement("div");
-        tooltip.classList.add("tooltip");
-        document.body.appendChild(tooltip);
+    <div class="tooltip" id="tooltip"></div>
 
-        var activeSimpleMDE = null;
+    <!-- JavaScript code -->
+    <script>
+        var tooltip = document.getElementById("tooltip");
+        var activeTooltipTarget = null;
 
         function showFullText(element) {
             var truncatedText = element;
@@ -48,34 +45,35 @@
 
             // Set the position of the tooltip
             var rect = truncatedText.getBoundingClientRect();
-            tooltip.style.top = rect.top + "px";
-            tooltip.style.left = rect.left + "px";
+            tooltip.style.top = (rect.top + window.scrollY) + "px";
+            tooltip.style.left = (rect.left + window.scrollX) + "px";
 
-            if (!activeSimpleMDE) {
-                activeSimpleMDE = new SimpleMDE({
-                    element: tooltip,
-                    spellChecker: false,
-                    toolbar: false,
-                    status: false,
-                    parsingConfig: {
-                        allowAtxHeaderWithoutSpace: true,
-                        underscoresBreakWords: true,
-                    },
-                });
-            }
-
-            // Render the Markdown text using SimpleMDE
-            activeSimpleMDE.value(fullText);
+            // Set the tooltip content to the full text
+            tooltip.textContent = fullText;
 
             // Display the tooltip
             tooltip.style.visibility = "visible";
             tooltip.style.opacity = "1";
+
+            activeTooltipTarget = truncatedText;
         }
 
         function hideFullText() {
             tooltip.style.opacity = "0"; // Fade-out effect
             tooltip.style.visibility = "hidden"; // Hide after fade-out
+
+            // Clear the tooltip content when hidden
+            tooltip.textContent = "";
+
+            activeTooltipTarget = null;
         }
+
+        // Hide tooltip if the mouse moves out of the current target element
+        document.addEventListener("mousemove", function (event) {
+            if (activeTooltipTarget && !activeTooltipTarget.contains(event.target)) {
+                hideFullText();
+            }
+        });
     </script>
 </body>
 </html>
