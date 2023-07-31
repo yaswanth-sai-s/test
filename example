@@ -22,7 +22,10 @@
 </head>
 <body>
     {% for item in items %}
-        <span class="truncated-text" data-full-text="{{ item.text|safe }}">
+        <span
+            class="truncated-text"
+            data-full-text="{{ item.text|safe }}"
+        >
             {{ item.text|truncatechars:50 }}
         </span>
     {% endfor %}
@@ -36,8 +39,8 @@
 
         var activeSimpleMDE = null;
 
-        function showFullText(event, element) {
-            var truncatedText = element;
+        function showFullText(event) {
+            var truncatedText = event.target;
             var fullText = truncatedText.getAttribute("data-full-text");
 
             // Calculate the position of the mouse cursor
@@ -74,17 +77,11 @@
             tooltip.style.visibility = "hidden"; // Hide after fade-out
         }
 
-        // Event delegation to handle multiple truncated-text elements
-        document.addEventListener("mouseover", function (event) {
-            if (event.target.classList.contains("truncated-text")) {
-                showFullText(event, event.target);
-            }
-        });
-
-        document.addEventListener("mouseout", function (event) {
-            if (!event.relatedTarget || !event.relatedTarget.classList.contains("truncated-text")) {
-                hideFullText();
-            }
+        // Add event listeners to all truncated-text elements
+        var truncatedTexts = document.querySelectorAll(".truncated-text");
+        truncatedTexts.forEach(function (truncatedText) {
+            truncatedText.addEventListener("mouseenter", showFullText);
+            truncatedText.addEventListener("mouseleave", hideFullText);
         });
     </script>
 </body>
