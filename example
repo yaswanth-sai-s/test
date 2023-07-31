@@ -36,43 +36,45 @@
 
     <!-- JavaScript code -->
     <script>
-        var tooltip = document.getElementById("tooltip");
-        var activeTooltipTarget = null;
+        document.addEventListener("DOMContentLoaded", function () {
+            var tooltip = document.getElementById("tooltip");
+            var activeTooltipTarget = null;
 
-        function showFullText(element) {
-            var truncatedText = element;
-            var fullText = truncatedText.getAttribute("data-full-text");
+            function showFullText(element) {
+                var truncatedText = element;
+                var fullText = truncatedText.getAttribute("data-full-text");
 
-            // Set the position of the tooltip
-            var rect = truncatedText.getBoundingClientRect();
-            tooltip.style.top = (rect.top + window.scrollY) + "px";
-            tooltip.style.left = (rect.left + window.scrollX) + "px";
+                // Set the position of the tooltip
+                var rect = truncatedText.getBoundingClientRect();
+                tooltip.style.top = (rect.top + window.scrollY) + "px";
+                tooltip.style.left = (rect.left + window.scrollX) + "px";
 
-            // Set the tooltip content to the full text
-            tooltip.textContent = fullText;
+                // Set the tooltip content to the full text
+                tooltip.textContent = fullText;
 
-            // Display the tooltip
-            tooltip.style.visibility = "visible";
-            tooltip.style.opacity = "1";
+                // Display the tooltip
+                tooltip.style.visibility = "visible";
+                tooltip.style.opacity = "1";
 
-            activeTooltipTarget = truncatedText;
-        }
-
-        function hideFullText() {
-            tooltip.style.opacity = "0"; // Fade-out effect
-            tooltip.style.visibility = "hidden"; // Hide after fade-out
-
-            // Clear the tooltip content when hidden
-            tooltip.textContent = "";
-
-            activeTooltipTarget = null;
-        }
-
-        // Hide tooltip if the mouse moves out of the current target element
-        document.addEventListener("mousemove", function (event) {
-            if (activeTooltipTarget && !activeTooltipTarget.contains(event.target)) {
-                hideFullText();
+                activeTooltipTarget = truncatedText;
             }
+
+            function hideFullText() {
+                tooltip.style.opacity = "0"; // Fade-out effect
+                tooltip.style.visibility = "hidden"; // Hide after fade-out
+
+                // Clear the tooltip content when hidden
+                tooltip.textContent = "";
+
+                activeTooltipTarget = null;
+            }
+
+            // Hide tooltip if the mouse moves out of the current target element
+            document.addEventListener("mousemove", function (event) {
+                if (activeTooltipTarget && !activeTooltipTarget.contains(event.target)) {
+                    hideFullText();
+                }
+            });
         });
     </script>
 </body>
