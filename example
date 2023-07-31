@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Hover Display Text</title>
+    <link rel="stylesheet" href="path/to/simplemde.min.css">
     <style>
         .tooltip {
             position: fixed;
@@ -17,13 +18,6 @@
             max-height: 300px; /* Maximum height of the tooltip */
             overflow: auto; /* Add scroll to the tooltip */
         }
-        .read-more {
-            cursor: pointer;
-            color: #fff;
-            font-size: 12px;
-            text-decoration: underline;
-            display: block;
-        }
     </style>
 </head>
 <body>
@@ -36,10 +30,22 @@
     </div>
 
     <!-- JavaScript code -->
+    <script src="path/to/simplemde.min.js"></script>
     <script>
         var tooltip = document.createElement("span");
         tooltip.classList.add("tooltip");
         document.body.appendChild(tooltip);
+
+        var simplemde = new SimpleMDE({
+            element: tooltip,
+            spellChecker: false,
+            toolbar: false,
+            status: false,
+            parsingConfig: {
+                allowAtxHeaderWithoutSpace: true,
+                underscoresBreakWords: true,
+            },
+        });
 
         function showFullText(event, element, text) {
             // Calculate the position of the truncated text relative to the viewport
@@ -62,16 +68,11 @@
             tooltip.style.top = tooltipTop + "px";
             tooltip.style.left = tooltipLeft + "px";
 
-            // Set tooltip content with "Read More" link
-            tooltip.innerHTML = `${text.substr(0, 500)}<span class="read-more" onclick="showFullTooltipContent(event, this, '${text}')">... Read More</span>`;
+            // Render the Markdown text and update the SimpleMDE instance
+            simplemde.value(stripHTMLTags(text));
 
             tooltip.style.visibility = "visible"; // Make tooltip visible immediately
             tooltip.style.opacity = "1"; // Fade-in effect
-        }
-
-        function showFullTooltipContent(event, element, fullContent) {
-            event.stopPropagation();
-            tooltip.innerHTML = fullContent;
         }
 
         function stripHTMLTags(html) {
