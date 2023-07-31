@@ -2,7 +2,6 @@
 <html>
 <head>
     <title>Hover Display Text</title>
-    <link rel="stylesheet" href="path/to/simplemde.min.css">
     <style>
         .tooltip {
             position: fixed;
@@ -37,22 +36,14 @@
     </div>
 
     <!-- JavaScript code -->
-    <script src="path/to/simplemde.min.js"></script>
     <script>
         var tooltip = document.createElement("div");
         tooltip.classList.add("tooltip");
         document.body.appendChild(tooltip);
 
-        var simplemde = new SimpleMDE({
-            element: tooltip,
-            spellChecker: false,
-            toolbar: false,
-            status: false,
-            parsingConfig: {
-                allowAtxHeaderWithoutSpace: true,
-                underscoresBreakWords: true,
-            },
-        });
+        var textarea = document.createElement("textarea");
+        textarea.classList.add("hidden-textarea");
+        document.body.appendChild(textarea);
 
         function showFullText(event, element, text) {
             // Calculate the position of the truncated text relative to the viewport
@@ -64,8 +55,11 @@
             tooltip.style.top = textPositionTop - tooltip.offsetHeight - 10 + "px";
             tooltip.style.left = textPositionLeft + textRect.width / 2 - tooltip.offsetWidth / 2 + "px";
 
-            // Render the Markdown text and update the SimpleMDE instance
-            simplemde.value(stripHTMLTags(text));
+            // Set the value of the hidden textarea with the full text content
+            textarea.value = stripHTMLTags(text);
+
+            // Display the content of the textarea inside the tooltip
+            tooltip.textContent = textarea.value;
 
             tooltip.style.visibility = "visible"; // Make tooltip visible immediately
             tooltip.style.opacity = "1"; // Fade-in effect
