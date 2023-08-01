@@ -2,7 +2,6 @@
 <html>
 <head>
     <title>Hover Display Rich Text</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
     <style>
         .truncated-text {
             position: relative;
@@ -62,9 +61,14 @@
     <div class="rich-text-popup" id="richTextPopup"></div>
 
     <!-- JavaScript code -->
-    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
     <script>
         var richTextPopup = document.getElementById("richTextPopup");
+
+        function removeHTMLTags(html) {
+            var div = document.createElement("div");
+            div.innerHTML = html;
+            return div.textContent || div.innerText || "";
+        }
 
         function showFullText(element) {
             var truncatedText = element;
@@ -75,10 +79,8 @@
             richTextPopup.style.top = (rect.top + window.scrollY + 20) + "px";
             richTextPopup.style.left = (rect.left + window.scrollX) + "px";
 
-            // Render rich text content using SimpleMDE
-            richTextPopup.innerHTML = ""; // Clear the previous content
-            var simplemde = new SimpleMDE({ element: richTextPopup });
-            simplemde.value(fullText);
+            // Remove HTML tags and set the plain text content of the popup
+            richTextPopup.innerText = removeHTMLTags(fullText);
 
             // Display the rich text popup
             richTextPopup.style.display = "block";
