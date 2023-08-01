@@ -124,3 +124,19 @@ function removeHTMLAndAsterisks(html) {
             var doc = parser.parseFromString(html, "text/html");
             return doc.body.textContent.replace(/\*/g, "");
         }
+{% for comment in comments %}
+        {% with comment_text_no_stars=comment.text|safe %}
+            {% for tag in ["<strong>", "</strong>", "<em>", "</em>"] %}
+                {% with comment_text_no_stars=comment_text_no_stars|cut:tag %}
+                {% endwith %}
+            {% endfor %}
+        <span
+            class="truncated-text"
+            data-full-text="{{ comment_text_no_stars }}"
+            onmouseover="showFullText(this)"
+            onmouseout="hideFullText()"
+        >
+            {{ comment.text|safe|truncatechars:20 }}
+        </span>
+        {% endwith %}
+    {% endfor %}
