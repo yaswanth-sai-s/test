@@ -55,7 +55,7 @@
             onmouseover="showFullText(this)"
             onmouseout="hideFullText()"
         >
-            {{ comment.text|truncatechars:20 }}
+            {{ comment.text|safe|truncatechars:20 }}
         </span>
     {% endfor %}
 
@@ -65,7 +65,6 @@
     <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
     <script>
         var richTextPopup = document.getElementById("richTextPopup");
-        var turndownService = new TurndownService();
 
         function showFullText(element) {
             var truncatedText = element;
@@ -77,6 +76,7 @@
             richTextPopup.style.left = (rect.left + window.scrollX) + "px";
 
             // Render rich text content using SimpleMDE
+            richTextPopup.innerHTML = ""; // Clear the previous content
             var simplemde = new SimpleMDE({ element: richTextPopup });
             simplemde.value(fullText);
 
