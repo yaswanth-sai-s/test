@@ -64,10 +64,9 @@
     <script>
         var richTextPopup = document.getElementById("richTextPopup");
 
-        function removeHTMLTags(html) {
-            var div = document.createElement("div");
-            div.innerHTML = html;
-            return div.textContent || div.innerText || "";
+        function stripHTMLTags(html) {
+            var doc = new DOMParser().parseFromString(html, "text/html");
+            return doc.body.textContent || "";
         }
 
         function showFullText(element) {
@@ -79,8 +78,8 @@
             richTextPopup.style.top = (rect.top + window.scrollY + 20) + "px";
             richTextPopup.style.left = (rect.left + window.scrollX) + "px";
 
-            // Remove HTML tags and set the plain text content of the popup
-            richTextPopup.innerText = removeHTMLTags(fullText);
+            // Strip HTML tags and set the plain text content of the popup
+            richTextPopup.textContent = stripHTMLTags(fullText);
 
             // Display the rich text popup
             richTextPopup.style.display = "block";
