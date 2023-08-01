@@ -107,3 +107,14 @@
     </script>
 </body>
 </html>
+
+
+
+ function removeHTMLAndAsterisks(html) {
+            var div = document.createElement("div");
+            div.innerHTML = html;
+            var text = div.textContent || div.innerText || "";
+            return text.replace(/\*/g, "");
+        }
+
+ richTextPopup.innerText = removeHTMLAndAsterisks(fullText);
