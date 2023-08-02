@@ -21,7 +21,7 @@ urlpatterns = [
 
 
 
-<select id="countryDropdown">
+<select id="region">
     <option value="">Select a country</option>
     <option value="country1">Country 1</option>
     <option value="country2">Country 2</option>
@@ -57,7 +57,7 @@ urlpatterns = [
 
     $(document).ready(function() {
         // Function to handle the change in the first dropdown
-        $("#countryDropdown").change(function() {
+        $("#region").change(function() {
             var selectedCountry = $(this).val();
             updateRegionalDropdown(selectedCountry);
         });
