@@ -28,7 +28,7 @@ urlpatterns = [
     <!-- Add more country options here -->
 </select>
 
-<select id="regionalDropdown">
+<select id="regionalDropdown" multiple>
     <option value="">Select a region</option>
 </select>
 
@@ -36,10 +36,10 @@ urlpatterns = [
 
 <script>
     // Function to handle the dynamic behavior of the second dropdown
-    function updateRegionalDropdown(selectedCountry) {
+    function updateRegionalDropdown(selectedCountries) {
         $.ajax({
             url: "{% url 'get_regional_codes' %}",
-            data: { 'country': selectedCountry },
+            data: { 'countries': selectedCountries },
             dataType: 'json',
             success: function(data) {
                 // Clear the second dropdown options
@@ -58,8 +58,9 @@ urlpatterns = [
     $(document).ready(function() {
         // Function to handle the change in the first dropdown
         $("#region").change(function() {
-            var selectedCountry = $(this).val();
-            updateRegionalDropdown(selectedCountry);
+            var selectedCountries = $(this).val();
+            updateRegionalDropdown(selectedCountries);
         });
     });
 </script>
+
