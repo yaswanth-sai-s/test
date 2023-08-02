@@ -64,3 +64,38 @@ urlpatterns = [
     });
 </script>
 
+
+
+<script>
+    // Function to handle the dynamic behavior of the second dropdown
+    function updateRegionalDropdown(selectedCountries) {
+        console.log("Selected Countries:", selectedCountries);
+
+        $.ajax({
+            url: "{% url 'get_regional_code' %}",
+            data: { 'countries': selectedCountries },
+            dataType: 'json',
+            success: function(data) {
+                console.log("Received Data:", data);
+
+                // Clear the second dropdown options
+                $("#regionalDropdown").empty();
+                // Add the new options based on the received data
+                $.each(data.regional_codes, function(index, value) {
+                    $("#regionalDropdown").append('<option value="' + value + '">' + value + '</option>');
+                });
+            },
+            error: function(error) {
+                console.log("Error:", error);
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        // Function to handle the change in the first dropdown
+        $("#region").change(function() {
+            var selectedCountries = $(this).val();
+            updateRegionalDropdown(selectedCountries);
+        });
+    });
+</script>
