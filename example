@@ -1,26 +1,3 @@
-from django.http import JsonResponse
-
-def get_regional_codes(request):
-    selected_country = request.GET.get('country')
-    
-    # Assuming you have a function to fetch regional codes based on the selected country
-    # Replace the following line with your actual data retrieval logic
-    regional_codes = get_regional_codes_for_country(selected_country)
-    
-    return JsonResponse({'regional_codes': regional_codes})
-
-
-
-
-from django.urls import path
-from . import views
-
-urlpatterns = [
-    path('get_regional_codes/', views.get_regional_codes, name='get_regional_codes'),
-]
-
-
-
 <select id="region">
     <option value="">Select a country</option>
     <option value="country1">Country 1</option>
@@ -38,50 +15,14 @@ urlpatterns = [
     // Function to handle the dynamic behavior of the second dropdown
     function updateRegionalDropdown(selectedCountries) {
         $.ajax({
-            url: "{% url 'get_regional_codes' %}",
-            data: { 'countries': selectedCountries },
-            dataType: 'json',
-            success: function(data) {
-                // Clear the second dropdown options
-                $("#regionalDropdown").empty();
-                // Add the new options based on the received data
-                $.each(data.regional_codes, function(index, value) {
-                    $("#regionalDropdown").append('<option value="' + value + '">' + value + '</option>');
-                });
-            },
-            error: function(error) {
-                console.log("Error:", error);
-            }
-        });
-    }
-
-    $(document).ready(function() {
-        // Function to handle the change in the first dropdown
-        $("#region").change(function() {
-            var selectedCountries = $(this).val();
-            updateRegionalDropdown(selectedCountries);
-        });
-    });
-</script>
-
-
-
-<script>
-    // Function to handle the dynamic behavior of the second dropdown
-    function updateRegionalDropdown(selectedCountries) {
-        console.log("Selected Countries:", selectedCountries);
-
-        $.ajax({
             url: "{% url 'get_regional_code' %}",
             data: { 'countries': selectedCountries },
             dataType: 'json',
             success: function(data) {
-                console.log("Received Data:", data);
-
                 // Clear the second dropdown options
                 $("#regionalDropdown").empty();
                 // Add the new options based on the received data
-                $.each(data.regional_codes, function(index, value) {
+                $.each(data.regional_code, function(index, value) {
                     $("#regionalDropdown").append('<option value="' + value + '">' + value + '</option>');
                 });
             },
