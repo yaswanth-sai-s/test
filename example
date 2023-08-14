@@ -44,26 +44,18 @@
 
 v2:
 
- document.addEventListener("DOMContentLoaded", function() {
-            const regionDropdown = document.getElementById("region");
-            const regionalDropdown = document.getElementById("regionalDropdown");
+      $(document).ready(function() {
+            $("#region").change(function() {
+                var selectedCountries = $(this).val();
 
-            regionDropdown.addEventListener("change", function() {
-                const selectedCountries = Array.from(this.selectedOptions, option => option.value);
+                $.getJSON("/get_regional_code/", { countries: selectedCountries }, function(data) {
+                    var regionalDropdown = $("#regionalDropdown");
+                    regionalDropdown.empty(); // Clear existing options
 
-                fetch(`your_django_url_here/?countries=${selectedCountries.join(',')}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        regionalDropdown.innerHTML = ""; // Clear existing options
-                        data.regional_code.forEach(value => {
-                            const option = document.createElement("option");
-                            option.value = value;
-                            option.textContent = value;
-                            regionalDropdown.appendChild(option);
-                        });
-                    })
-                    .catch(error => {
-                        console.error("Error:", error);
+                    $.each(data.regional_code, function(index, value) {
+                        regionalDropdown.append('<option value="' + value + '">' + value + '</option>');
                     });
+                });
             });
         });
+
