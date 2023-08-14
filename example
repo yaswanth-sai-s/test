@@ -44,44 +44,36 @@
 
 v2:
 
+function updateRegionalDropdown(selectedCountries) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", `/get_regional_code/?countries=${selectedCountries.join(',')}`, true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        var data = JSON.parse(xhr.responseText);
+                        var regionalDropdown = document.getElementById("regionalDropdown");
+                        regionalDropdown.innerHTML = ""; // Clear existing options
+                        data.regional_code.forEach(function(value) {
+                            var option = document.createElement("option");
+                            option.value = value;
+                            option.textContent = value;
+                            regionalDropdown.appendChild(option);
+                        });
+                    } else {
+                        console.error("Request failed with status:", xhr.status);
+                    }
+                }
+            };
+            xhr.send();
+        }
 
-<select id="region">
-    <option value="">Select a country</option>
-    <option value="country1">Country 1</option>
-    <option value="country2">Country 2</option>
-    <!-- Add more country options here -->
-</select>
-
-<select id="regionalDropdown" multiple>
-    <option value="">Select a region</option>
-</select>
-
-<script>
-    // Function to handle the dynamic behavior of the second dropdown
-    function updateRegionalDropdown(selectedCountries) {
-        fetch(`/get_regional_code/?countries=${selectedCountries.join(',')}`)
-            .then(response => response.json())
-            .then(data => {
-                const regionalDropdown = document.getElementById("regionalDropdown");
-                regionalDropdown.innerHTML = ""; // Clear existing options
-                data.regional_code.forEach(value => {
-                    const option = document.createElement("option");
-                    option.value = value;
-                    option.textContent = value;
-                    regionalDropdown.appendChild(option);
+        document.addEventListener("DOMContentLoaded", function() {
+            var regionDropdown = document.getElementById("region");
+            regionDropdown.addEventListener("change", function() {
+                var selectedCountries = Array.from(this.selectedOptions, function(option) {
+                    return option.value;
                 });
-            })
-            .catch(error => {
-                console.error("Error:", error);
+                updateRegionalDropdown(selectedCountries);
             });
-    }
-
-    document.addEventListener("DOMContentLoaded", function() {
-        const regionDropdown = document.getElementById("region");
-        regionDropdown.addEventListener("change", function() {
-            const selectedCountries = Array.from(this.selectedOptions, option => option.value);
-            updateRegionalDropdown(selectedCountries);
         });
-    });
-</script>
-
