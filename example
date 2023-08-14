@@ -44,33 +44,23 @@
 
 v2:
 
-document.addEventListener("DOMContentLoaded", function() {
-            const regionDropdown = document.getElementById("region");
-            const regionalDropdown = document.getElementById("regionalDropdown");
-
-            regionDropdown.addEventListener("change", function() {
-                const selectedCountries = Array.from(this.selectedOptions, option => option.value);
-                const xhr = new XMLHttpRequest();
-                const url = `/get_regional_code/?countries=${selectedCountries.join(',')}`;
-
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                        if (xhr.status === 200) {
-                            const data = JSON.parse(xhr.responseText);
-
-                            regionalDropdown.innerHTML = ""; // Clear existing options
-                            data.regional_code.forEach(value => {
-                                const option = document.createElement("option");
-                                option.value = value;
-                                option.textContent = value;
-                                regionalDropdown.appendChild(option);
-                            });
-                        } else {
-                            console.error("Request failed with status:", xhr.status);
-                        }
-                    }
-                };
-
+ $(document).ready(function() {
+            $("#region").change(function() {
+                var selectedCountries = $(this).val();
+                
+                $.get("/get_regional_code/", { countries: selectedCountries }, function(data) {
+                    var regionalDropdown = $("#regionalDropdown");
+                    regionalDropdown.empty().append($('<option>', { value: '', text: 'Select a region' }));
+                    
+                    $.each(data.regional_code, function(index, value) {
+                        regionalDropdown.append($('<option>', {
+                            value: value,
+                            text: value
+                        }));
+                    });
+                }, "json");
+            });
+        });
                 xhr.open("GET", url, true);
                 xhr.send();
             });
