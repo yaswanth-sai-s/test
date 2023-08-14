@@ -44,40 +44,28 @@
 
 v2:
 
- function updateRegionalDropdown(selectedCountries) {
-            var xhr = new XMLHttpRequest();
-            var url = `/get_regional_code/?countries=${selectedCountries.join(',')}`;
-            xhr.open("GET", url, true);
-            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 200) {
-                        console.log("Received Data:", xhr.responseText);
-                        
-                        var data = JSON.parse(xhr.responseText);
-                        var regionalDropdown = document.getElementById("regionalDropdown");
-                        regionalDropdown.innerHTML = ""; // Clear existing options
-                        data.regional_code.forEach(function(value) {
-                            console.log("Adding option:", value);
-                            var option = document.createElement("option");
-                            option.value = value;
-                            option.textContent = value;
-                            regionalDropdown.appendChild(option);
-                        });
-                    } else {
-                        console.error("Request failed with status:", xhr.status);
-                    }
-                }
-            };
-            xhr.send();
-        }
+  $(document).ready(function() {
+            $("#region").change(function() {
+                var selectedCountries = $(this).val();
+                console.log("Selected Countries:", selectedCountries); // Log selected countries
 
-        document.addEventListener("DOMContentLoaded", function() {
-            var regionDropdown = document.getElementById("region");
-            regionDropdown.addEventListener("change", function() {
-                var selectedCountries = Array.from(this.selectedOptions, function(option) {
-                    return option.value;
+                $.ajax({
+                    url: "/get_regional_code/",
+                    data: { 'countries': selectedCountries },
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log("Fetched Regional Codes:", data.regional_code); // Log fetched codes
+
+                        var regionalDropdown = $("#regionalDropdown");
+                        regionalDropdown.empty(); // Clear existing options
+
+                        $.each(data.regional_code, function(index, value) {
+                            regionalDropdown.append('<option value="' + value + '">' + value + '</option>');
+                        });
+                    },
+                    error: function(error) {
+                        console.log("Error:", error);
+                    }
                 });
-                updateRegionalDropdown(selectedCountries);
             });
         });
