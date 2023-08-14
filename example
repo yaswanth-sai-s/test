@@ -44,26 +44,34 @@
 
 v2:
 
-   document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function() {
             const regionDropdown = document.getElementById("region");
             const regionalDropdown = document.getElementById("regionalDropdown");
 
-            regionDropdown.addEventListener("change", async function() {
+            regionDropdown.addEventListener("change", function() {
                 const selectedCountries = Array.from(this.selectedOptions, option => option.value);
+                const xhr = new XMLHttpRequest();
+                const url = `/get_regional_code/?countries=${selectedCountries.join(',')}`;
 
-                try {
-                    const response = await fetch(`your_django_url_here/?countries=${selectedCountries.join(',')}`);
-                    const data = await response.json();
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            const data = JSON.parse(xhr.responseText);
 
-                    regionalDropdown.innerHTML = ""; // Clear existing options
-                    data.regional_code.forEach(value => {
-                        const option = document.createElement("option");
-                        option.value = value;
-                        option.textContent = value;
-                        regionalDropdown.appendChild(option);
-                    });
-                } catch (error) {
-                    console.error("Error:", error);
-                }
+                            regionalDropdown.innerHTML = ""; // Clear existing options
+                            data.regional_code.forEach(value => {
+                                const option = document.createElement("option");
+                                option.value = value;
+                                option.textContent = value;
+                                regionalDropdown.appendChild(option);
+                            });
+                        } else {
+                            console.error("Request failed with status:", xhr.status);
+                        }
+                    }
+                };
+
+                xhr.open("GET", url, true);
+                xhr.send();
             });
         });
