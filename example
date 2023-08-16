@@ -70,3 +70,20 @@ v2:
                         console.log("Error:", error);
                     }
                 });
+
+
+add on :
+ $("#regionalDropdown").change(function() {
+            var selectedRegionalCodes = $(this).val();
+            $.ajax({
+                url: "/handle_selected_regions/",  // URL to handle selected regions
+                data: { 'selected_regions': selectedRegionalCodes },
+                type: 'GET',
+                success: function(response) {
+                    console.log("Selected Regional Codes sent to server:", selectedRegionalCodes);
+                },
+                error: function(error) {
+                    console.log("Error sending selected regions:", error);
+                }
+            });
+        });
