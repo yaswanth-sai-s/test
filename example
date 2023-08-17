@@ -73,17 +73,23 @@ v2:
 
 
 add on :
- $("#regionalDropdown").change(function() {
+  $("#regionalDropdown").change(function() {
             var selectedRegionalCodes = $(this).val();
+
+            // Update the full list based on selections
+            var updatedRegionalCodes = selectedRegionalCodes.length > 0
+                ? selectedRegionalCodes
+                : allRegionalCodes;
+
             $.ajax({
-                url: "/handle_selected_regions/",  // URL to handle selected regions
-                data: { 'selected_regions': selectedRegionalCodes },
+                url: "/handle_regions/",  // Replace with your URL
+                data: { 'selected_regions': updatedRegionalCodes },
                 type: 'GET',
                 success: function(response) {
-                    console.log("Selected Regional Codes sent to server:", selectedRegionalCodes);
+                    console.log("Regional codes sent to server:", updatedRegionalCodes);
                 },
                 error: function(error) {
-                    console.log("Error sending selected regions:", error);
+                    console.log("Error sending regional codes:", error);
                 }
             });
         });
