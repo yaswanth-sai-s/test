@@ -44,52 +44,75 @@
 
 v2:
 
- $.ajax({
-                    url: "/get_regional_code/",
-                    data: { 'countries': selectedCountries },
-                    dataType: 'json',
-                    success: function(data) {
-                        var regionalDropdown = $("#regionalDropdown");
-                        regionalDropdown.empty();
+<script>
+    $(document).ready(function() {
+        $(".selectpicker").selectpicker();
 
-                        if (data.regional_code.length > 0) {
-                            $.each(data.regional_code, function(index, value) {
-                                regionalDropdown.append($('<option>', {
-                                    value: value,
-                                    text: value
-                                }));
-                            });
-                        } else {
-                            regionalDropdown.append($('<option>', {
-                                value: '',
-                                text: 'No regions available'
-                            }));
-                        }
-                    },
-                    error: function(error) {
-                        console.log("Error:", error);
-                    }
-                });
+        // ... Other code ...
 
+        // Define the full list of regional codes
+        var allRegionalCodes = [];
 
-add on :
-  $("#regionalDropdown").change(function() {
-            var selectedRegionalCodes = $(this).val();
+        // Populate the initial regional codes (replace with actual data)
+        $.ajax({
+            url: "/get_all_regional_codes/",  // Replace with your URL
+            success: function(data) {
+                allRegionalCodes = data.regional_codes;
+            },
+            error: function(error) {
+                console.log("Error fetching all regional codes:", error);
+            }
+        });
 
-            // Update the full list based on selections
-            var updatedRegionalCodes = selectedRegionalCodes.length > 0
-                ? selectedRegionalCodes
-                : allRegionalCodes;
-
+        // Function to update the regional dropdown based on selected countries
+        function updateRegionalDropdown(selectedCountries) {
             $.ajax({
-                url: "/handle_regions/",  // Replace with your URL
-                data: { 'selected_regions': updatedRegionalCodes },
-                type: 'GET',
-                success: function(response) {
-                    console.log("Regional codes sent to server:", updatedRegionalCodes);
+                url: "/get_regional_code/",
+                data: { 'countries': selectedCountries },
+                dataType: 'json',
+                success: function(data) {
+                    var regionalDropdown = $("#regionalDropdown");
+                    regionalDropdown.empty();
+
+                    $.each(data.regional_code, function(index, value) {
+                        regionalDropdown.append($('<option>', {
+                            value: value,
+                            text: value
+                        }));
+                    });
+
+                    regionalDropdown.selectpicker('refresh');
                 },
                 error: function(error) {
-                    console.log("Error sending regional codes:", error);
+                    console.log("Error:", error);
+                }
+            });
+        }
+
+        // Update the regional dropdown when countries are selected
+        $("#region").change(function() {
+            var selectedCountries = $(this).val();
+            updateRegionalDropdown(selectedCountries);
+        });
+
+        // Update the regional dropdown on page load (if needed)
+        var selectedCountries = $("#region").val();
+        updateRegionalDropdown(selectedCountries);
+
+        // Function to send selected regional codes to the server
+        $("#regionalDropdown").change(function() {
+            var selectedRegionalCodes = $(this).val();
+            $.ajax({
+                url: "/handle_regions/",  // Replace with your URL
+                data: { 'selected_regions': selectedRegionalCodes },
+                type: 'GET',
+                success: function(response) {
+                    console.log("Selected Regional Codes sent to server:", selectedRegionalCodes);
+                },
+                error: function(error) {
+                    console.log("Error sending selected regions:", error);
                 }
             });
         });
+    });
+</script>
