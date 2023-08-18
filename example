@@ -44,73 +44,53 @@
 
 v2:
 
-<script>
-    $(document).ready(function() {
-        $(".selectpicker").selectpicker();
-
-        // ... Other code ...
-
-        // Define the full list of regional codes
-        var allRegionalCodes = [];
-
-        // Populate the initial regional codes (replace with actual data)
+    // Function to handle
+    function updateRegionalDropdown(selectedCountries) {
         $.ajax({
-            url: "/get_all_regional_codes/",  // Replace with your URL
+            url: "{% url 'get_regional_code' %}",
+            data: { 'countries': selectedCountries },
+            dataType: 'json',
             success: function(data) {
-                allRegionalCodes = data.regional_codes;
-            },
-            error: function(error) {
-                console.log("Error fetching all regional codes:", error);
-            }
-        });
-
-        // Function to update the regional dropdown based on selected countries
-        function updateRegionalDropdown(selectedCountries) {
-            $.ajax({
-                url: "/get_regional_code/",
-                data: { 'countries': selectedCountries },
-                dataType: 'json',
-                success: function(data) {
-                    var regionalDropdown = $("#regionalDropdown");
+                 var regionalDropdown = $("#regionalDropdown");
                     regionalDropdown.empty();
 
-                    $.each(data.regional_code, function(index, value) {
+                $.each(data.regional_code, function(index, value) {
                         regionalDropdown.append($('<option>', {
                             value: value,
                             text: value
                         }));
+                        console.log(regionalDropdown);
+                        console.log(value);
                     });
+                   regionalDropdown.selectpicker('refresh');
+            },
+            error: function(error) {
+                console.log("Error:", error);
+            }
+        });
+    }
 
-                    regionalDropdown.selectpicker('refresh');
-                },
-                error: function(error) {
-                    console.log("Error:", error);
-                }
-            });
-        }
-
-        // Update the regional dropdown when countries are selected
+    $(document).ready(function() {
+        $(".selectpicker").selectpicker();
         $("#region").change(function() {
             var selectedCountries = $(this).val();
+            console.log("selectedstate "+selectedCountries);
             updateRegionalDropdown(selectedCountries);
-        });
 
-        // Update the regional dropdown on page load (if needed)
-        var selectedCountries = $("#region").val();
-        updateRegionalDropdown(selectedCountries);
+            // Update the full list based on selections
+            var updatedRegionalCodes = selectedCountries.length > 0
+                ?selectedCountries
+                : allRegionalCodes;
 
-        // Function to send selected regional codes to the server
-        $("#regionalDropdown").change(function() {
-            var selectedRegionalCodes = $(this).val();
             $.ajax({
-                url: "/handle_regions/",  // Replace with your URL
-                data: { 'selected_regions': selectedRegionalCodes },
+                url: "/ipv_report/",  // Replace with your URL
+                data: { 'selected_regions': updatedRegionalCodes },
                 type: 'GET',
                 success: function(response) {
-                    console.log("Selected Regional Codes sent to server:", selectedRegionalCodes);
+                    console.log("Regional codes sent to server:", updatedRegionalCodes);
                 },
                 error: function(error) {
-                    console.log("Error sending selected regions:", error);
+                    console.log("Error sending regional codes:", error);
                 }
             });
         });
