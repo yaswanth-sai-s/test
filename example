@@ -156,3 +156,5 @@ v2:
             });
 
             loadRegionalDropdownFromStorage();
+
+<input type="hidden" id="selectedCountries" name="selectedCountries">
