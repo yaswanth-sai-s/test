@@ -140,3 +140,19 @@ v2:
 
         loadRegionalDropdownFromStorage();
     });
+
+
+  function loadRegionalDropdownFromStorage() {
+                var selectedCountries = $("#selectedCountries").val().split(",");
+                $("#region").val(selectedCountries);
+                updateRegionalDropdown(selectedCountries);
+            }
+
+            $("#region").change(function() {
+                var selectedCountries = $(this).val();
+                updateRegionalDropdown(selectedCountries);
+                $("#selectedCountries").val(selectedCountries.join(","));
+                updateUrlParams(selectedCountries);
+            });
+
+            loadRegionalDropdownFromStorage();
