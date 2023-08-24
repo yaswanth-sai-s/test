@@ -112,3 +112,31 @@ v2:
             params.set('countries[]', selectedCountries);
             var newUrl = window.location.pathname + '?' + params.toString();
             window.history.replaceState(null, null, newUrl);
+
+
+ function loadRegionalDropdownFromStorage() {
+            var selectedCountries = $("#region").val();
+            updateRegionalDropdown(selectedCountries);
+        }
+
+        function updateUrlParams(selectedCountries) {
+            var newUrl = window.location.pathname + '?';
+            var first = true;
+            selectedCountries.forEach(function(country) {
+                if (!first) {
+                    newUrl += '&';
+                }
+                newUrl += 'countries[]=' + country;
+                first = false;
+            });
+            window.history.replaceState(null, null, newUrl);
+        }
+
+        $("#region").change(function() {
+            var selectedCountries = $(this).val();
+            updateRegionalDropdown(selectedCountries);
+            updateUrlParams(selectedCountries);
+        });
+
+        loadRegionalDropdownFromStorage();
+    });
