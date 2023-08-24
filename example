@@ -96,3 +96,13 @@ v2:
         });
     });
 </script>
+
+
+ function loadRegionalDropdownFromUrl() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var selectedCountries = urlParams.getAll('countries[]');
+            if (selectedCountries.length > 0) {
+                $("#region").val(selectedCountries);
+                updateRegionalDropdown(selectedCountries);
+            }
+        }
