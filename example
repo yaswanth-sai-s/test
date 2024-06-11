@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nested Table with Expandable Rows</title>
+  <style>
+    .expand-btn {
+      cursor: pointer;
+    }
+    .nested-table-container {
+      display: none;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+    }
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .table, .table th, .table td {
+      border: 1px solid black;
+    }
+    .table th, .table td {
+      padding: 8px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Main Table Header 1</th>
+          <th>Main Table Header 2</th>
+          <th>Main Table Header 3</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Row 1, Col 1</td>
+          <td>Row 1, Col 2</td>
+          <td class="expand-btn text-center" data-target="#nestedTable1">▼</td>
+        </tr>
+        <tr class="nested-table-container" id="nestedTable1">
+          <td colspan="3">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>Nested Table Header 1</th>
+                  <th>Nested Table Header 2</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Nested Row 1, Col 1</td>
+                  <td>Nested Row 1, Col 2</td>
+                </tr>
+                <tr>
+                  <td>Nested Row 2, Col 1</td>
+                  <td>Nested Row 2, Col 2</td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td>Row 2, Col 1</td>
+          <td>Row 2, Col 2</td>
+          <td class="expand-btn text-center" data-target="#nestedTable2">▼</td>
+        </tr>
+        <tr class="nested-table-container" id="nestedTable2">
+          <td colspan="3">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>Nested Table Header 1</th>
+                  <th>Nested Table Header 2</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Nested Row 1, Col 1</td>
+                  <td>Nested Row 1, Col 2</td>
+                </tr>
+                <tr>
+                  <td>Nested Row 2, Col 1</td>
+                  <td>Nested Row 2, Col 2</td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var expandButtons = document.querySelectorAll('.expand-btn');
+      expandButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+          var targetId = this.getAttribute('data-target');
+          var targetElement = document.querySelector(targetId);
+          var isExpanded = targetElement.style.display === 'table-row';
+
+          // Close all open nested tables
+          document.querySelectorAll('.nested-table-container').forEach(function(element) {
+            element.style.display = 'none';
+            element.style.maxHeight = '0';
+          });
+
+          // Toggle the clicked nested table
+          if (!isExpanded) {
+            targetElement.style.display = 'table-row';
+            setTimeout(function() {
+              targetElement.style.maxHeight = targetElement.scrollHeight + 'px';
+            }, 10); // slight delay to trigger transition
+          } else {
+            targetElement.style.maxHeight = '0';
+            setTimeout(function() {
+              targetElement.style.display = 'none';
+            }, 300); // match the transition duration
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
