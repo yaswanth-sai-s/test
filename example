@@ -3,128 +3,284 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nested Table with Expandable Rows</title>
+  <title>Accordion with Table</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    .expand-btn {
-      cursor: pointer;
+    /* Remove border lines from all tables */
+    .table,
+    .table td,
+    .table th {
+      border: none;
     }
-    .nested-table-container {
-      display: none;
+
+    .accordion-collapse {
+      max-height: 0;
       overflow: hidden;
-      transition: max-height 0.3s ease-out;
+      transition: max-height 0.5s ease-out;
     }
-    .table {
-      width: 100%;
-      border-collapse: collapse;
+
+    .accordion-collapse.show {
+      max-height: 1000px; /* Adjust to your preference */
     }
-    .table, .table th, .table td {
-      border: 1px solid black;
+
+    .accordion-header button {
+      transition: transform 0.3s ease-in-out;
     }
-    .table th, .table td {
-      padding: 8px;
-      text-align: left;
+
+    .accordion-header button.collapsed {
+      transform: rotate(180deg);
     }
   </style>
 </head>
 <body>
-  <div class="container mt-5">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Main Table Header 1</th>
-          <th>Main Table Header 2</th>
-          <th>Main Table Header 3</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Row 1, Col 1</td>
-          <td>Row 1, Col 2</td>
-          <td class="expand-btn text-center" data-target="#nestedTable1">▼</td>
-        </tr>
-        <tr class="nested-table-container" id="nestedTable1">
-          <td colspan="3">
-            <table class="table table-sm">
-              <thead>
-                <tr>
-                  <th>Nested Table Header 1</th>
-                  <th>Nested Table Header 2</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Nested Row 1, Col 1</td>
-                  <td>Nested Row 1, Col 2</td>
-                </tr>
-                <tr>
-                  <td>Nested Row 2, Col 1</td>
-                  <td>Nested Row 2, Col 2</td>
-                </tr>
-              </tbody>
-            </table>
-          </td>
-        </tr>
-        <tr>
-          <td>Row 2, Col 1</td>
-          <td>Row 2, Col 2</td>
-          <td class="expand-btn text-center" data-target="#nestedTable2">▼</td>
-        </tr>
-        <tr class="nested-table-container" id="nestedTable2">
-          <td colspan="3">
-            <table class="table table-sm">
-              <thead>
-                <tr>
-                  <th>Nested Table Header 1</th>
-                  <th>Nested Table Header 2</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Nested Row 1, Col 1</td>
-                  <td>Nested Row 1, Col 2</td>
-                </tr>
-                <tr>
-                  <td>Nested Row 2, Col 1</td>
-                  <td>Nested Row 2, Col 2</td>
-                </tr>
-              </tbody>
-            </table>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var expandButtons = document.querySelectorAll('.expand-btn');
-      expandButtons.forEach(function(button) {
-        button.addEventListener('click', function() {
-          var targetId = this.getAttribute('data-target');
-          var targetElement = document.querySelector(targetId);
-          var isExpanded = targetElement.style.display === 'table-row';
+<div class="accordion accordion-flush" id="accordionFlushExample">
+  <table class="table">
+    {% for item in accordion_items %}
+    <tr class="accordion-header" id="flush-heading{{ forloop.counter }}">
+      {% for extra in item.extras %}
+      <td>{{ extra }}</td>
+      {% endfor %}
+      <td>{{ item.title }}</td>
+      <td><button class="btn btn-primary" type="button" onclick="toggleAccordion('collapse{{ forloop.counter }}', this)">
+        +
+      </button></td>
+    </tr>
+    <tr>
+      <td colspan="5">
+        <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="flush-heading{{ forloop.counter }}" data-bs-parent="#accordionFlushExample">
+          <table class="table">
+            {% for content_row in item.contents %}
+            <tr>
+              {% for content in content_row %}
+              <td>{{ content }}</td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
 
-          // Close all open nested tables
-          document.querySelectorAll('.nested-table-container').forEach(function(element) {
-            element.style.display = 'none';
-            element.style.maxHeight = '0';
-          });
-
-          // Toggle the clicked nested table
-          if (!isExpanded) {
-            targetElement.style.display = 'table-row';
-            setTimeout(function() {
-              targetElement.style.maxHeight = targetElement.scrollHeight + 'px';
-            }, 10); // slight delay to trigger transition
-          } else {
-            targetElement.style.maxHeight = '0';
-            setTimeout(function() {
-              targetElement.style.display = 'none';
-            }, 300); // match the transition duration
-          }
-        });
-      });
+<script>
+  function toggleAccordion(collapseId, button) {
+    var collapseElement = document.getElementById(collapseId);
+    var allCollapseElements = document.querySelectorAll('.accordion-collapse');
+    
+    allCollapseElements.forEach(function(item) {
+      if (item.id !== collapseId) {
+        item.classList.remove('show');
+        item.style.maxHeight = null; // Reset max-height for smooth animation
+      }
     });
-  </script>
+    
+    collapseElement.classList.toggle('show');
+    
+    var collapsed = button.classList.contains('collapsed');
+    button.textContent = collapsed ? '+' : '-';
+    button.classList.toggle('collapsed');
+    
+    // Set max-height to the actual height for smooth slide animation
+    if (collapseElement.classList.contains('show')) {
+      collapseElement.style.maxHeight = collapseElement.scrollHeight + 'px';
+    } else {
+      collapseElement.style.maxHeight = null; // Reset max-height when collapsing
+    }
+  }
+</script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+data
+
+
+from django.shortcuts import render
+
+def my_view(request):
+    accordion_items = [
+        {
+            'extras': ['Extra 1', 'Extra 2', 'Extra 3'],
+            'title': 'Accordion Item #1',
+            'contents': [
+                ['Content 1', 'Content 2', 'Content 3', 'Content 4'],
+                ['Content 5', 'Content 6', 'Content 7', 'Content 8']
+            ]
+        },
+        # Add more accordion items as needed
+    ]
+    return render(request, 'accordion_template.html', {'accordion_items': accordion_items})
+
+
+
+
+
+static one
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accordion with Table</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Remove border lines from all tables */
+    .table,
+    .table td,
+    .table th {
+      border: none;
+    }
+
+    .accordion-collapse {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-out;
+    }
+
+    .accordion-collapse.show {
+      max-height: 1000px; /* Adjust to your preference */
+    }
+
+    .accordion-header button {
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .accordion-header button.collapsed {
+      transform: rotate(180deg);
+    }
+  </style>
+</head>
+<body>
+
+<div class="accordion accordion-flush" id="accordionFlushExample">
+  <table class="table">
+    <!-- Accordion Item #1 -->
+    <tr class="accordion-header" id="flush-headingOne">
+      <td>Extra 1</td>
+      <td>Extra 2</td>
+      <td>Extra 3</td>
+      <td>Accordion Item #1</td>
+      <td><button class="btn btn-primary" type="button" onclick="toggleAccordion('collapseOne', this)">
+        +
+      </button></td>
+    </tr>
+    <tr>
+      <td colspan="5">
+        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+          <table class="table">
+            <tr>
+              <td>Content 1</td>
+              <td>Content 2</td>
+              <td>Content 3</td>
+              <td>Content 4</td>
+            </tr>
+            <tr>
+              <td>Content 5</td>
+              <td>Content 6</td>
+              <td>Content 7</td>
+              <td>Content 8</td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
+    
+    <!-- Accordion Item #2 -->
+    <tr class="accordion-header" id="flush-headingTwo">
+      <td>Extra 1</td>
+      <td>Extra 2</td>
+      <td>Extra 3</td>
+      <td>Accordion Item #2</td>
+      <td><button class="btn btn-primary" type="button" onclick="toggleAccordion('collapseTwo', this)">
+        +
+      </button></td>
+    </tr>
+    <tr>
+      <td colspan="5">
+        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+          <table class="table">
+            <tr>
+              <td>Content A</td>
+              <td>Content B</td>
+              <td>Content C</td>
+              <td>Content D</td>
+            </tr>
+            <tr>
+              <td>Content E</td>
+              <td>Content F</td>
+              <td>Content G</td>
+              <td>Content H</td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
+    
+    <!-- Accordion Item #3 -->
+    <tr class="accordion-header" id="flush-headingThree">
+      <td>Extra 1</td>
+      <td>Extra 2</td>
+      <td>Extra 3</td>
+      <td>Accordion Item #3</td>
+      <td><button class="btn btn-primary" type="button" onclick="toggleAccordion('collapseThree', this)">
+        +
+      </button></td>
+    </tr>
+    <tr>
+      <td colspan="5">
+        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+          <table class="table">
+            <tr>
+              <td>Content X</td>
+              <td>Content Y</td>
+              <td>Content Z</td>
+              <td>Content W</td>
+            </tr>
+            <tr>
+              <td>Content P</td>
+              <td>Content Q</td>
+              <td>Content R</td>
+              <td>Content S</td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<script>
+  function toggleAccordion(collapseId, button) {
+    var collapseElement = document.getElementById(collapseId);
+    var allCollapseElements = document.querySelectorAll('.accordion-collapse');
+    
+    allCollapseElements.forEach(function(item) {
+      if (item.id !== collapseId) {
+        item.classList.remove('show');
+        item.style.maxHeight = null; // Reset max-height for smooth animation
+      }
+    });
+    
+    collapseElement.classList.toggle('show');
+    
+    var collapsed = button.classList.contains('collapsed');
+    button.textContent = collapsed ? '+' : '-';
+    button.classList.toggle('collapsed');
+    
+    // Set max-height to the actual height for smooth slide animation
+    if (collapseElement.classList.contains('show')) {
+      collapseElement.style.maxHeight = collapseElement.scrollHeight + 'px';
+    } else {
+      collapseElement.style.maxHeight = null; // Reset max-height when collapsing
+    }
+  }
+</script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
