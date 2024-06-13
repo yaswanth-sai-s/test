@@ -284,3 +284,138 @@ static one
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+new change code
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accordion with Table and Icons</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .accordion-button::after {
+      content: '+';
+      font-size: 1.25rem;
+      float: right;
+    }
+    .accordion-button.collapsed::after {
+      content: '+';
+    }
+    .accordion-button:not(.collapsed)::after {
+      content: '-';
+    }
+  </style>
+</head>
+<body>
+
+<div class="accordion accordion-flush" id="accordionFlushExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="flush-headingOne">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+        Accordion Item #1
+      </button>
+    </h2>
+    <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item's accordion body.
+        <table class="table">
+          <tr>
+            <td>Content 1</td>
+            <td>Content 2</td>
+            <td>Content 3</td>
+            <td>Content 4</td>
+          </tr>
+          <tr>
+            <td>Content 5</td>
+            <td>Content 6</td>
+            <td>Content 7</td>
+            <td>Content 8</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="flush-headingTwo">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+        Accordion Item #2
+      </button>
+    </h2>
+    <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the second item's accordion body.
+        <table class="table">
+          <tr>
+            <td>Content 1</td>
+            <td>Content 2</td>
+            <td>Content 3</td>
+            <td>Content 4</td>
+          </tr>
+          <tr>
+            <td>Content 5</td>
+            <td>Content 6</td>
+            <td>Content 7</td>
+            <td>Content 8</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="flush-headingThree">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+        Accordion Item #3
+      </button>
+    </h2>
+    <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the third item's accordion body.
+        <table class="table">
+          <tr>
+            <td>Content 1</td>
+            <td>Content 2</td>
+            <td>Content 3</td>
+            <td>Content 4</td>
+          </tr>
+          <tr>
+            <td>Content 5</td>
+            <td>Content 6</td>
+            <td>Content 7</td>
+            <td>Content 8</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.querySelectorAll('.accordion-button').forEach(button => {
+    button.addEventListener('click', () => {
+      const currentlyExpanded = document.querySelector('.accordion-button:not(.collapsed)');
+      if (currentlyExpanded && currentlyExpanded !== button) {
+        currentlyExpanded.classList.add('collapsed');
+        currentlyExpanded.setAttribute('aria-expanded', 'false');
+        const currentlyExpandedPanel = document.querySelector(currentlyExpanded.dataset.bsTarget);
+        currentlyExpandedPanel.classList.remove('show');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
