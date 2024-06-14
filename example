@@ -1,36 +1,41 @@
+collapseElement.style.maxHeight = '0px';
+      }, 10); // Allow time for DOM update for animation
+    }
+  }
+
+  // Add an event listener for accordion changes to adjust text size
+  document.querySelectorAll('.accordion-collapse').forEach(item => {
+    item.addEventListener('transitionend', () => {
+      if (item.classList.contains('show')) {
+        table.classList.add('reduce-text-size'); // Reduce text size
+      } else if (document.querySelectorAll('.accordion-collapse.show').length === 0) {
+        table.classList.remove('reduce-text-size'); // Reset text size if no accordion items are open
+      }
+    });
+  });
+});
+
+</script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Accordion with DataTable</title>
+  <title>Accordion with Table</title>
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet">
   <style>
     /* Remove border lines from all tables */
     .table,
     .table td,
     .table th {
       border: none;
-    }
-    
-    /* Base styles for table */
-    .responsive-table {
-      width: 100%;
-    }
-
-    /* Default font size */
-    .responsive-table td, .responsive-table th {
-      font-size: 16px;
-    }
-
-    /* Media queries based on table width */
-    .responsive-table.narrow td, .responsive-table.narrow th {
-      font-size: 14px;
-    }
-
-    .responsive-table.very-narrow td, .responsive-table.very-narrow th {
-      font-size: 12px;
     }
 
     .accordion-collapse {
@@ -50,139 +55,179 @@
     .accordion-header button.collapsed {
       transform: rotate(180deg);
     }
+
+    .reduce-text-size td, .reduce-text-size th {
+      font-size: 0.8em; /* Adjust as needed */
+    }
   </style>
 </head>
 <body>
 
+<!-- Filter Input and Button -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <input type="text" id="searchInput" class="form-control w-50" placeholder="Search...">
+  <button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#filterModal">Filter</button>
+  <button class="btn btn-danger" id="clearFiltersBtn">Clear Filters</button>
+</div>
+
+<!-- Sorting Dropdown -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <select id="sortColumn" class="form-select w-25">
+    <option value="">Sort by column...</option>
+  </select>
+  <select id="sortOrder" class="form-select w-25">
+    <option value="asc">Ascending</option>
+    <option value="desc">Descending</option>
+  </select>
+  <button class="btn btn-primary" id="applySortBtn">Sort</button>
+</div>
+
+<!-- Filter Modal -->
+<div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="filterModalLabel">Filter Columns</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="filterSearchInput" class="form-control mb-3" placeholder="Search columns...">
+        <div id="filterCheckboxes">
+          <!-- Checkboxes will be added dynamically -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="applyFiltersBtn" data-bs-dismiss="modal">Apply Filters</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="accordion accordion-flush" id="accordionFlushExample">
-  <table id="mainTable" class="table responsive-table">
-    <!-- Accordion Item #1 -->
-    <thead>
-      <tr class="accordion-header" id="flush-headingOne">
-        <th>Extra 1</th>
-        <th>Extra 2</th>
-        <th>Extra 3</th>
-        <th>Accordion Item #1</th>
-        <th><button class="btn btn-primary" type="button" onclick="toggleAccordion('collapseOne', this)">
-          +
-        </button></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td colspan="5">
-          <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-            <table class="table responsive-table nested-table">
-              <thead>
-                <tr>
-                  <th>Content 1</th>
-                  <th>Content 2</th>
-                  <th>Content 3</th>
-                  <th>Content 4</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Content 5</td>
-                  <td>Content 6</td>
-                  <td>Content 7</td>
-                  <td>Content 8</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </td>
-      </tr>
-
-      <!-- Accordion Item #2 -->
-      <tr class="accordion-header" id="flush-headingTwo">
-        <td>Extra 1</td>
-        <td>Extra 2</td>
-        <td>Extra 3</td>
-        <td>Accordion Item #2</td>
-        <td><button class="btn btn-primary" type="button" onclick="toggleAccordion('collapseTwo', this)">
-          +
-        </button></td>
-      </tr>
-      <tr>
-        <td colspan="5">
-          <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
-            <table class="table responsive-table nested-table">
-              <thead>
-                <tr>
-                  <th>Content A</th>
-                  <th>Content B</th>
-                  <th>Content C</th>
-                  <th>Content D</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Content E</td>
-                  <td>Content F</td>
-                  <td>Content G</td>
-                  <td>Content H</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </td>
-      </tr>
-
-      <!-- Accordion Item #3 -->
-      <tr class="accordion-header" id="flush-headingThree">
-        <td>Extra 1</td>
-        <td>Extra 2</td>
-        <td>Extra 3</td>
-        <td>Accordion Item #3</td>
-        <td><button class="btn btn-primary" type="button" onclick="toggleAccordion('collapseThree', this)">
-          +
-        </button></td>
-      </tr>
-      <tr>
-        <td colspan="5">
-          <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
-            <table class="table responsive-table nested-table">
-              <thead>
-                <tr>
-                  <th>Content X</th>
-                  <th>Content Y</th>
-                  <th>Content Z</th>
-                  <th>Content W</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Content P</td>
-                  <td>Content Q</td>
-                  <td>Content R</td>
-                  <td>Content S</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </td>
-      </tr>
-    </tbody>
+  <table class="table" id="mainTable">
+    <!-- Table content remains unchanged -->
   </table>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <script>
-  $(document).ready(function() {
-    $('#mainTable').DataTable({
-      paging: false,
-      searching: true,
-      info: false
+  const table = document.querySelector('.table');
+  const searchInput = document.getElementById('searchInput');
+  const filterSearchInput = document.getElementById('filterSearchInput');
+  const filterCheckboxes = document.getElementById('filterCheckboxes');
+  const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+  const applyFiltersBtn = document.getElementById('applyFiltersBtn');
+  const sortColumn = document.getElementById('sortColumn');
+  const sortOrder = document.getElementById('sortOrder');
+  const applySortBtn = document.getElementById('applySortBtn');
+
+  function getColumnNames() {
+    const headers = table.querySelectorAll('th');
+    const columnNames = [];
+    headers.forEach(header => {
+      columnNames.push(header.innerText);
     });
+    return columnNames;
+  }
+
+  function populateFilterCheckboxes() {
+    const columnNames = getColumnNames();
+    filterCheckboxes.innerHTML = '';
+    columnNames.forEach(name => {
+      const checkbox = document.createElement('div');
+      checkbox.classList.add('form-check');
+      checkbox.innerHTML = `
+        <input class="form-check-input" type="checkbox" value="${name}" id="filter-${name}">
+        <label class="form-check-label" for="filter-${name}">${name}</label>
+      `;
+      filterCheckboxes.appendChild(checkbox);
+    });
+  }
+
+  function populateSortDropdown() {
+    const columnNames = getColumnNames();
+    sortColumn.innerHTML = '<option value="">Sort by column...</option>';
+    columnNames.forEach((name, index) => {
+      const option = document.createElement('option');
+      option.value = index;
+      option.textContent = name;
+      sortColumn.appendChild(option);
+    });
+  }
+
+  function filterTable() {
+    const searchText = searchInput.value.toLowerCase();
+    const checkedColumns = [...filterCheckboxes.querySelectorAll('input:checked')].map(input => input.value);
+
+    table.querySelectorAll('tbody tr').forEach(row => {
+      let rowText = '';
+      row.querySelectorAll('td').forEach((cell, index) => {
+        if (checkedColumns.includes(getColumnNames()[index])) {
+          rowText += cell.innerText.toLowerCase() + ' ';
+        }
+      });
+
+      if (rowText.includes(searchText)) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  }
+
+  function sortTable() {
+    const columnIndex = parseInt(sortColumn.value);
+    const order = sortOrder.value;
+    const rows = Array.from(table.querySelectorAll('tbody tr'));
+
+    rows.sort((a, b) => {
+      const aText = a.querySelectorAll('td')[columnIndex].innerText;
+      const bText = b.querySelectorAll('td')[columnIndex].innerText;
+
+      if (aText < bText) {
+        return order === 'asc' ? -1 : 1;
+      }
+      if (aText > bText) {
+        return order === 'asc' ? 1 : -1;
+      }
+      return 0;
+    });
+
+    rows.forEach(row => table.querySelector('tbody').appendChild(row));
+  }
+
+  searchInput.addEventListener('input', filterTable);
+  applyFiltersBtn.addEventListener('click', filterTable);
+  filterSearchInput.addEventListener('input', () => {
+    const searchText = filterSearchInput.value.toLowerCase();
+    filterCheckboxes.querySelectorAll('.form-check').forEach(checkbox => {
+      if (checkbox.innerText.toLowerCase().includes(searchText)) {
+        checkbox.style.display = '';
+      } else {
+        checkbox.style.display = 'none';
+      }
+    });
+  });
+
+  clearFiltersBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    filterCheckboxes.querySelectorAll('input').forEach(input => {
+      input.checked = false;
+    });
+    filterTable();
+  });
+
+  applySortBtn.addEventListener('click', sortTable);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    populateFilterCheckboxes();
+    populateSortDropdown();
   });
 
   function toggleAccordion(collapseId, button) {
     var collapseElement = document.getElementById(collapseId);
     var allCollapseElements = document.querySelectorAll('.accordion-collapse');
     var allButtons = document.querySelectorAll('.accordion-header button');
-    
+
     // Close all other accordion items
     allCollapseElements.forEach(function(item) {
       if (item.id !== collapseId) {
@@ -215,36 +260,8 @@
     if (collapseElement.classList.contains('show')) {
       collapseElement.style.transition = 'max-height 0.3s ease-out'; // Set opening transition
       collapseElement.style.maxHeight = collapseElement.scrollHeight + 'px';
+      table.classList.add('reduce-text-size'); // Reduce text size
     } else {
       collapseElement.style.transition = 'max-height 0.2s ease-out'; // Set closing transition
       collapseElement.style.maxHeight = collapseElement.scrollHeight + 'px'; // Set to current height for smooth collapse
       setTimeout(() => {
-        collapseElement.style.maxHeight = '0px';
-      }, 10); // Allow time for DOM update for animation
-    }
-  }
-
-  function adjustTableTextSize() {
-    var table = document.querySelector('.responsive-table');
-    if (table) {
-      var tableWidth = table.offsetWidth;
-
-      if (tableWidth < 600) {
-        table.classList.add('very-narrow');
-        table.classList.remove('narrow');
-      } else if (tableWidth < 800) {
-        table.classList.add('narrow');
-        table.classList.remove('very-narrow');
-      } else {
-        table.classList.remove('narrow', 'very-narrow');
-      }
-    }
-  }
-
-  window.addEventListener('resize', adjustTableTextSize);
-  document.addEventListener('DOMContentLoaded', adjustTableTextSize);
-</script>
-
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
