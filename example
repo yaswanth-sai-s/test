@@ -731,3 +731,151 @@ js
     }
   }
 </script>
+
+
+new code
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accordion with Table</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Remove border lines from all tables */
+    .table,
+    .table td,
+    .table th {
+      border: none;
+    }
+
+    .accordion-header button {
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .accordion-header button.collapsed {
+      transform: rotate(180deg);
+    }
+
+    .extra-column {
+      max-width: 0;
+      overflow: hidden;
+      transition: max-width 0.5s ease-out;
+      white-space: nowrap;
+    }
+
+    .extra-column.show {
+      max-width: 150px; /* Adjust width as needed */
+    }
+  </style>
+</head>
+<body>
+
+<div class="accordion accordion-flush" id="accordionFlushExample">
+  <table class="table">
+    <!-- Accordion Header -->
+    <thead>
+      <tr class="accordion-header" id="accordion-extra">
+        <th>Extra 1</th>
+        <th>Extra 2</th>
+        <th>Extra 3</th>
+        <th>
+          Accordion Item
+          <button class="btn btn-primary" type="button" onclick="toggleAccordion(this)">+</button>
+        </th>
+      </tr>
+    </thead>
+    <!-- Accordion Body -->
+    <tbody id="accordion-body">
+      <tr>
+        <td>Content 1</td>
+        <td>Content 2</td>
+        <td>Content 3</td>
+        <td>Content 4</td>
+      </tr>
+      <tr>
+        <td>Content 5</td>
+        <td>Content 6</td>
+        <td>Content 7</td>
+        <td>Content 8</td>
+      </tr>
+      <tr>
+        <td>Content X</td>
+        <td>Content Y</td>
+        <td>Content Z</td>
+        <td>Content W</td>
+      </tr>
+      <tr>
+        <td>Content P</td>
+        <td>Content Q</td>
+        <td>Content R</td>
+        <td>Content S</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  let isExpanded = false;
+  const extraHeaders = ['Extra Header 1', 'Extra Header 2', 'Extra Header 3'];
+  const extraContents = ['Extra Content 1', 'Extra Content 2', 'Extra Content 3'];
+
+  function toggleAccordion(button) {
+    const accordionHeader = document.getElementById('accordion-extra');
+    const accordionBody = document.getElementById('accordion-body');
+
+    if (!isExpanded) {
+      // Expand accordion
+      extraHeaders.forEach(header => {
+        const th = document.createElement('th');
+        th.textContent = header;
+        th.classList.add('extra-column', 'show');
+        accordionHeader.appendChild(th);
+      });
+
+      accordionBody.querySelectorAll('tr').forEach((row, index) => {
+        extraContents.forEach(content => {
+          const td = document.createElement('td');
+          td.textContent = content;
+          td.classList.add('extra-column', 'show');
+          row.appendChild(td);
+        });
+      });
+
+      button.textContent = '-';
+      isExpanded = true;
+    } else {
+      // Collapse accordion
+      accordionHeader.querySelectorAll('.extra-column').forEach(th => {
+        th.classList.remove('show');
+      });
+
+      accordionBody.querySelectorAll('tr').forEach(row => {
+        row.querySelectorAll('.extra-column').forEach(td => {
+          td.classList.remove('show');
+        });
+      });
+
+      setTimeout(() => {
+        accordionHeader.querySelectorAll('.extra-column').forEach(th => {
+          accordionHeader.removeChild(th);
+        });
+
+        accordionBody.querySelectorAll('tr').forEach(row => {
+          row.querySelectorAll('.extra-column').forEach(td => {
+            row.removeChild(td);
+          });
+        });
+      }, 500); // Match this with CSS transition time
+
+      button.textContent = '+';
+      isExpanded = false;
+    }
+  }
+</script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
