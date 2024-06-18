@@ -575,3 +575,115 @@ v4
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
+
+v5 
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accordion with Table</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Remove border lines from all tables */
+    .table,
+    .table td,
+    .table th {
+      border: none;
+    }
+
+    .accordion-header button {
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .accordion-header button.collapsed {
+      transform: rotate(180deg);
+    }
+
+    .accordion-collapse {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-out;
+    }
+
+    .accordion-collapse.show {
+      max-height: 1000px; /* Adjust to your preference */
+      transition: max-height 0.5s ease-in;
+    }
+  </style>
+</head>
+<body>
+
+<div class="accordion accordion-flush" id="accordionFlushExample">
+  <table class="table">
+    <!-- Accordion Header -->
+    <thead>
+      <tr class="accordion-header" id="accordion-extra">
+        <th>Extra 1</th>
+        <th>Extra 2</th>
+        <th>Extra 3</th>
+        <th>
+          Accordion Item
+          <button class="btn btn-primary" type="button" onclick="toggleAccordion(this)">+</button>
+        </th>
+      </tr>
+    </thead>
+    <!-- Accordion Body -->
+    <tbody id="accordion-body" class="accordion-collapse">
+      <tr>
+        <td>Content 1</td>
+        <td>Content 2</td>
+        <td>Content 3</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  let isExpanded = false;
+  const extraHeaders = ['Extra Header 1', 'Extra Header 2', 'Extra Header 3'];
+  const extraContents = ['Extra Content 1', 'Extra Content 2', 'Extra Content 3'];
+
+  function toggleAccordion(button) {
+    const accordionHeader = document.getElementById('accordion-extra');
+    const accordionBody = document.getElementById('accordion-body');
+
+    if (!isExpanded) {
+      // Expand accordion
+      extraHeaders.forEach(header => {
+        const th = document.createElement('th');
+        th.textContent = header;
+        accordionHeader.appendChild(th);
+      });
+
+      extraContents.forEach(content => {
+        const td = document.createElement('td');
+        td.textContent = content;
+        accordionBody.firstElementChild.appendChild(td);
+      });
+
+      accordionBody.classList.add('show');
+      button.textContent = '-';
+      isExpanded = true;
+    } else {
+      // Collapse accordion
+      const thCount = extraHeaders.length;
+      for (let i = 0; i < thCount; i++) {
+        accordionHeader.lastElementChild.remove();
+        accordionBody.firstElementChild.lastElementChild.remove();
+      }
+
+      accordionBody.classList.remove('show');
+      button.textContent = '+';
+      isExpanded = false;
+    }
+  }
+</script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
