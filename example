@@ -208,3 +208,257 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accordion with DataTable</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet">
+  <link href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+  <style>
+    /* Remove border lines from all tables */
+    .table,
+    .table td,
+    .table th {
+      border: none;
+    }
+
+    /* Base styles for table */
+    .responsive-table {
+      width: 100%;
+    }
+
+    /* Default font size */
+    .responsive-table td, .responsive-table th {
+      font-size: 16px;
+      padding-bottom: 1px; /* Add 1px padding-bottom */
+    }
+
+    /* Media queries based on table width */
+    .responsive-table.narrow td, .responsive-table.narrow th {
+      font-size: 14px;
+    }
+
+    .responsive-table.very-narrow td, .responsive-table.very-narrow th {
+      font-size: 12px;
+    }
+
+    .accordion-collapse {
+      display: none;
+    }
+
+    .accordion-collapse.show {
+      display: table-row;
+    }
+
+    .accordion-header button {
+      border: none;
+      background: none;
+      padding: 0;
+      font-size: 1em;
+      cursor: pointer;
+    }
+
+    /* DataTables sorting arrows */
+    table.dataTable thead .sorting:after,
+    table.dataTable thead .sorting_asc:after,
+    table.dataTable thead .sorting_desc:after {
+      content: "";
+      display: inline-block;
+      position: relative;
+      top: 0.5em;
+      right: -0.5em;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 0.4em 0.4em 0 0.4em;
+      border-color: #000 transparent transparent transparent;
+    }
+
+    table.dataTable thead .sorting_asc:after {
+      border-bottom: none;
+      border-width: 0 0.4em 0.4em 0.4em;
+      border-color: transparent transparent #000 transparent;
+    }
+
+    table.dataTable thead .sorting_desc:after {
+      border-top: none;
+      border-width: 0.4em 0.4em 0 0.4em;
+      border-color: #000 transparent transparent transparent;
+    }
+
+    /* Tooltip styling */
+    .tooltip-text {
+      position: relative;
+      display: inline-block;
+    }
+
+    .tooltip-text .tooltip-content {
+      visibility: hidden;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 5px;
+      padding: 5px;
+      position: absolute;
+      z-index: 1;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+
+    .tooltip-text:hover .tooltip-content {
+      visibility: visible;
+    }
+
+    /* Prevent text overflow */
+    .no-overflow {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+<div class="accordion accordion-flush" id="accordionFlushExample">
+  <table id="mainTable" class="table responsive-table">
+    <thead>
+      <tr class="accordion-header" id="flush-headingOne">
+        <th>Extra 1</th>
+        <th>Extra 2</th>
+        <th>Extra 3</th>
+        <th class="tooltip-text">Accordion Item #1
+          <button class="btn" type="button" onclick="toggleAccordion('collapseOne', this)">+</button>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="no-overflow tooltip-text">Extra 1<span class="tooltip-content">Extra 1</span></td>
+        <td class="no-overflow tooltip-text">Extra 2<span class="tooltip-content">Extra 2</span></td>
+        <td class="no-overflow tooltip-text">Extra 3<span class="tooltip-content">Extra 3</span></td>
+        <td class="no-overflow tooltip-text">Content 1<span class="tooltip-content">Content 1</span></td>
+      </tr>
+      <tr id="collapseOne" class="accordion-collapse">
+        <td class="no-overflow tooltip-text">Content 2<span class="tooltip-content">Content 2</span></td>
+        <td class="no-overflow tooltip-text">Content 3<span class="tooltip-content">Content 3</span></td>
+        <td class="no-overflow tooltip-text">Content 4<span class="tooltip-content">Content 4</span></td>
+        <td class="no-overflow tooltip-text">Content 5<span class="tooltip-content">Content 5</span></td>
+      </tr>
+
+      <tr class="accordion-header" id="flush-headingTwo">
+        <td>Extra 1</td>
+        <td>Extra 2</td>
+        <td>Extra 3</td>
+        <td class="tooltip-text">Accordion Item #2
+          <button class="btn" type="button" onclick="toggleAccordion('collapseTwo', this)">+</button>
+        </td>
+      </tr>
+      <tr>
+        <td class="no-overflow tooltip-text">Extra 1<span class="tooltip-content">Extra 1</span></td>
+        <td class="no-overflow tooltip-text">Extra 2<span class="tooltip-content">Extra 2</span></td>
+        <td class="no-overflow tooltip-text">Extra 3<span class="tooltip-content">Extra 3</span></td>
+        <td class="no-overflow tooltip-text">Content A<span class="tooltip-content">Content A</span></td>
+      </tr>
+      <tr id="collapseTwo" class="accordion-collapse">
+        <td class="no-overflow tooltip-text">Content B<span class="tooltip-content">Content B</span></td>
+        <td class="no-overflow tooltip-text">Content C<span class="tooltip-content">Content C</span></td>
+        <td class="no-overflow tooltip-text">Content D<span class="tooltip-content">Content D</span></td>
+        <td class="no-overflow tooltip-text">Content E<span class="tooltip-content">Content E</span></td>
+      </tr>
+
+      <tr class="accordion-header" id="flush-headingThree">
+        <td>Extra 1</td>
+        <td>Extra 2</td>
+        <td>Extra 3</td>
+        <td class="tooltip-text">Accordion Item #3
+          <button class="btn" type="button" onclick="toggleAccordion('collapseThree', this)">+</button>
+        </td>
+      </tr>
+      <tr>
+        <td class="no-overflow tooltip-text">Extra 1<span class="tooltip-content">Extra 1</span></td>
+        <td class="no-overflow tooltip-text">Extra 2<span class="tooltip-content">Extra 2</span></td>
+        <td class="no-overflow tooltip-text">Extra 3<span class="tooltip-content">Extra 3</span></td>
+        <td class="no-overflow tooltip-text">Content X<span class="tooltip-content">Content X</span></td>
+      </tr>
+      <tr id="collapseThree" class="accordion-collapse">
+        <td class="no-overflow tooltip-text">Content Y<span class="tooltip-content">Content Y</span></td>
+        <td class="no-overflow tooltip-text">Content Z<span class="tooltip-content">Content Z</span></td>
+        <td class="no-overflow tooltip-text">Content W<span class="tooltip-content">Content W</span></td>
+        <td class="no-overflow tooltip-text">Content P<span class="tooltip-content">Content P</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#mainTable').DataTable({
+      paging: false,
+      searching: true,
+      info: false
+    });
+  });
+
+  function toggleAccordion(collapseId, button) {
+    var collapseElement = document.getElementById(collapseId);
+    var allCollapseElements = document.querySelectorAll('.accordion-collapse');
+    var allButtons = document.querySelectorAll('.accordion-header button');
+
+    // Close all other accordion items
+    allCollapseElements.forEach(function(item) {
+      if (item.id !== collapseId) {
+        item.classList.remove('show');
+      }
+    });
+
+    // Reset all other buttons to +
+    allButtons.forEach(function(btn) {
+      if (btn !== button) {
+        btn.textContent = '+';
+      }
+    });
+
+    // Toggle the clicked accordion item
+    collapseElement.classList.toggle('show');
+
+    // Toggle the button text
+    button.textContent = collapseElement.classList.contains('show') ? '-' : '+';
+  }
+
+  function adjustTableTextSize() {
+    var table = document.querySelector('.responsive-table');
+    if (table) {
+      var tableWidth = table.offsetWidth;
+
+      if (tableWidth < 600) {
+        table.classList.add('very-narrow');
+        table.classList.remove('narrow');
+      } else if (tableWidth < 800) {
+        table.classList.add('narrow');
+        table.classList.remove('very-narrow');
+      } else {
+        table.classList.remove('narrow', 'very-narrow');
+      }
+    }
+  }
+
+  window.addEventListener('resize', adjustTableTextSize);
+  document.addEventListener('DOMContentLoaded', adjustTableTextSize);
+</script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
