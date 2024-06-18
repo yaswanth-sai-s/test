@@ -360,3 +360,121 @@ v2 expanding columns
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
+v3
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accordion with Dynamic Columns</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Remove border lines from all tables */
+    .table,
+    .table td,
+    .table th {
+      border: none;
+    }
+
+    .accordion-header button {
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .accordion-header button.collapsed {
+      transform: rotate(180deg);
+    }
+  </style>
+</head>
+<body>
+
+<div class="accordion accordion-flush" id="accordionFlushExample">
+  <table class="table">
+    <!-- Accordion Header -->
+    <thead>
+      <tr class="accordion-header" id="flush-headingOne">
+        <th>Extra 1</th>
+        <th>Extra 2</th>
+        <th>Extra 3</th>
+        <th>
+          Accordion Item #1
+          <button class="btn btn-primary" type="button" onclick="toggleAccordion('flush-headingOne', this)">+</button>
+        </th>
+      </tr>
+    </thead>
+    <!-- Accordion Body -->
+    <tbody id="accordion-body-one">
+      <tr>
+        <td>Content 1</td>
+        <td>Content 2</td>
+        <td>Content 3</td>
+      </tr>
+      <tr>
+        <td>Content 4</td>
+        <td>Content 5</td>
+        <td>Content 6</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  function toggleAccordion(collapseId, button) {
+    const accordionBody = document.getElementById(`accordion-body-${collapseId}`);
+    const isCollapsed = button.textContent === '+';
+
+    if (isCollapsed) {
+      // Add additional columns dynamically
+      const headers = ['Extra Header 1', 'Extra Header 2', 'Extra Header 3'];
+      const data = [
+        ['Extra Content A', 'Extra Content B', 'Extra Content C'],
+        ['Extra Content D', 'Extra Content E', 'Extra Content F']
+      ];
+
+      // Create header cells
+      const headerRow = accordionBody.nextElementSibling.querySelector('tr');
+      headers.forEach(headerText => {
+        const th = document.createElement('th');
+        th.textContent = headerText;
+        headerRow.appendChild(th);
+      });
+
+      // Create data rows
+      data.forEach(rowData => {
+        const row = document.createElement('tr');
+        rowData.forEach(cellData => {
+          const td = document.createElement('td');
+          td.textContent = cellData;
+          row.appendChild(td);
+        });
+        accordionBody.appendChild(row);
+      });
+
+      button.textContent = '-';
+    } else {
+      // Remove additional columns dynamically
+      const headerRow = accordionBody.nextElementSibling.querySelector('tr');
+      const dataRows = accordionBody.querySelectorAll('tr');
+
+      // Remove header cells
+      for (let i = 0; i < 3; i++) {
+        headerRow.removeChild(headerRow.lastElementChild);
+      }
+
+      // Remove data cells
+      dataRows.forEach(row => {
+        for (let i = 0; i < 3; i++) {
+          row.removeChild(row.lastElementChild);
+        }
+      });
+
+      button.textContent = '+';
+    }
+  }
+</script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
