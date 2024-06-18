@@ -687,3 +687,47 @@ v5
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
+
+js
+<script>
+  let isExpanded = false;
+  const extraHeaders = ['Extra Header 1', 'Extra Header 2', 'Extra Header 3'];
+  const extraContents = ['Extra Content 1', 'Extra Content 2', 'Extra Content 3'];
+
+  function toggleAccordion(button) {
+    const accordionHeader = document.getElementById('accordion-extra');
+    const accordionBody = document.getElementById('accordion-body');
+
+    if (!isExpanded) {
+      // Expand accordion
+      extraHeaders.forEach(header => {
+        const th = document.createElement('th');
+        th.textContent = header;
+        accordionHeader.appendChild(th);
+      });
+
+      extraContents.forEach(content => {
+        const td = document.createElement('td');
+        td.textContent = content;
+        accordionBody.firstElementChild.appendChild(td);
+      });
+
+      accordionBody.classList.add('show');
+      button.textContent = '-';
+      isExpanded = true;
+    } else {
+      // Collapse accordion
+      const thCount = extraHeaders.length;
+      for (let i = 0; i < thCount; i++) {
+        accordionHeader.removeChild(accordionHeader.lastElementChild);
+        accordionBody.firstElementChild.removeChild(accordionBody.firstElementChild.lastElementChild);
+      }
+
+      accordionBody.classList.remove('show');
+      button.textContent = '+';
+      isExpanded = false;
+    }
+  }
+</script>
