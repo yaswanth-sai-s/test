@@ -35,21 +35,19 @@
     }
 
     .accordion-collapse {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease-out;
+      display: none;
     }
 
     .accordion-collapse.show {
-      max-height: 1000px; /* Adjust to your preference */
+      display: table-row;
     }
 
     .accordion-header button {
-      transition: transform 0.3s ease-in-out;
-    }
-
-    .accordion-header button.collapsed {
-      transform: rotate(180deg);
+      border: none;
+      background: none;
+      padding: 0;
+      font-size: 1em;
+      cursor: pointer;
     }
 
     /* DataTables sorting arrows */
@@ -85,112 +83,64 @@
 
 <div class="accordion accordion-flush" id="accordionFlushExample">
   <table id="mainTable" class="table responsive-table">
-    <!-- Accordion Item #1 -->
     <thead>
       <tr class="accordion-header" id="flush-headingOne">
         <th>Extra 1</th>
         <th>Extra 2</th>
         <th>Extra 3</th>
-        <th>Accordion Item #1</th>
-        <th><button class="btn btn-primary" type="button" onclick="toggleAccordion('collapseOne', this)">
-          +
-        </button></th>
+        <th>Accordion Item #1 <button class="btn" type="button" onclick="toggleAccordion('collapseOne', this)">+</button></th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td colspan="5">
-          <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-            <table class="table responsive-table nested-table">
-              <thead>
-                <tr>
-                  <th>Content 1</th>
-                  <th>Content 2</th>
-                  <th>Content 3</th>
-                  <th>Content 4</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Content 5</td>
-                  <td>Content 6</td>
-                  <td>Content 7</td>
-                  <td>Content 8</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </td>
+        <td>Extra 1</td>
+        <td>Extra 2</td>
+        <td>Extra 3</td>
+        <td>Content 1</td>
+      </tr>
+      <tr id="collapseOne" class="accordion-collapse">
+        <td>Content 2</td>
+        <td>Content 3</td>
+        <td>Content 4</td>
+        <td>Content 5</td>
       </tr>
 
-      <!-- Accordion Item #2 -->
       <tr class="accordion-header" id="flush-headingTwo">
         <td>Extra 1</td>
         <td>Extra 2</td>
         <td>Extra 3</td>
-        <td>Accordion Item #2</td>
-        <td><button class="btn btn-primary" type="button" onclick="toggleAccordion('collapseTwo', this)">
-          +
-        </button></td>
+        <td>Accordion Item #2 <button class="btn" type="button" onclick="toggleAccordion('collapseTwo', this)">+</button></td>
       </tr>
       <tr>
-        <td colspan="5">
-          <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
-            <table class="table responsive-table nested-table">
-              <thead>
-                <tr>
-                  <th>Content A</th>
-                  <th>Content B</th>
-                  <th>Content C</th>
-                  <th>Content D</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Content E</td>
-                  <td>Content F</td>
-                  <td>Content G</td>
-                  <td>Content H</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </td>
+        <td>Extra 1</td>
+<td>Extra 2</td>
+        <td>Extra 3</td>
+        <td>Content A</td>
+      </tr>
+      <tr id="collapseTwo" class="accordion-collapse">
+        <td>Content B</td>
+        <td>Content C</td>
+        <td>Content D</td>
+        <td>Content E</td>
       </tr>
 
-      <!-- Accordion Item #3 -->
       <tr class="accordion-header" id="flush-headingThree">
         <td>Extra 1</td>
         <td>Extra 2</td>
         <td>Extra 3</td>
-        <td>Accordion Item #3</td>
-        <td><button class="btn btn-primary" type="button" onclick="toggleAccordion('collapseThree', this)">
-          +
-        </button></td>
+        <td>Accordion Item #3 <button class="btn" type="button" onclick="toggleAccordion('collapseThree', this)">+</button></td>
       </tr>
       <tr>
-        <td colspan="5">
-          <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
-            <table class="table responsive-table nested-table">
-              <thead>
-                <tr>
-                  <th>Content X</th>
-                  <th>Content Y</th>
-                  <th>Content Z</th>
-                  <th>Content W</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Content P</td>
-                  <td>Content Q</td>
-                  <td>Content R</td>
-                  <td>Content S</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </td>
+        <td>Extra 1</td>
+        <td>Extra 2</td>
+        <td>Extra 3</td>
+        <td>Content X</td>
+      </tr>
+      <tr id="collapseThree" class="accordion-collapse">
+        <td>Content Y</td>
+        <td>Content Z</td>
+        <td>Content W</td>
+        <td>Content P</td>
       </tr>
     </tbody>
   </table>
@@ -212,16 +162,11 @@
     var collapseElement = document.getElementById(collapseId);
     var allCollapseElements = document.querySelectorAll('.accordion-collapse');
     var allButtons = document.querySelectorAll('.accordion-header button');
-    
+
     // Close all other accordion items
     allCollapseElements.forEach(function(item) {
       if (item.id !== collapseId) {
-        item.style.transition = 'max-height 0.2s ease-out'; // Set closing transition
         item.classList.remove('show');
-        item.style.maxHeight = item.scrollHeight + 'px'; // Set to current height for smooth collapse
-        setTimeout(() => {
-          item.style.maxHeight = '0px';
-        }, 10); // Allow time for DOM update for animation
       }
     });
 
@@ -229,29 +174,14 @@
     allButtons.forEach(function(btn) {
       if (btn !== button) {
         btn.textContent = '+';
-        btn.classList.add('collapsed');
       }
     });
 
     // Toggle the clicked accordion item
     collapseElement.classList.toggle('show');
 
-    // Toggle the button text and state
-    var collapsed = !collapseElement.classList.contains('show');
-    button.textContent = collapsed ? '+' : '-';
-    button.classList.toggle('collapsed', collapsed);
-
-    // Set transition for opening and closing
-    if (collapseElement.classList.contains('show')) {
-      collapseElement.style.transition = 'max-height 0.3s ease-out'; // Set opening transition
-      collapseElement.style.maxHeight = collapseElement.scrollHeight + 'px';
-    } else {
-      collapseElement.style.transition = 'max-height 0.2s ease-out'; // Set closing transition
-      collapseElement.style.maxHeight = collapseElement.scrollHeight + 'px'; // Set to current height for smooth collapse
-      setTimeout(() => {
-        collapseElement.style.maxHeight = '0px';
-      }, 10); // Allow time for DOM update for animation
-    }
+    // Toggle the button text
+    button.textContent = collapseElement.classList.contains('show') ? '-' : '+';
   }
 
   function adjustTableTextSize() {
