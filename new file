@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Accordion with Table</title>
+  <title>Expandable Table</title>
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css" rel="stylesheet">
   <style>
     /* Remove border lines from all tables */
@@ -18,11 +18,7 @@
     .table th {
       padding-bottom: 1px;
       white-space: nowrap; /* Prevent text wrap */
-    }
-
-    .table td:hover,
-    .table th:hover {
-      position: relative;
+      position: relative; /* Enable positioning for hover text */
     }
 
     .table td:hover::after,
@@ -39,18 +35,14 @@
       display: block;
     }
 
-    .accordion-collapse {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease-out;
-    }
-
-    .accordion-collapse.show {
-      max-height: 1000px; /* Adjust to your preference */
+    .extra-column {
+      display: none;
     }
 
     .accordion-header button {
       transition: transform 0.3s ease-in-out;
+      display: block;
+      margin: 0 auto; /* Center align the button within the th */
     }
 
     .accordion-header button.collapsed {
@@ -65,77 +57,51 @@
     <!-- Table Headers -->
     <thead>
       <tr>
-        <th>Header1</th>
-        <th>Header2</th>
-        <th>Header3</th>
-        <th>Header4</th>
-        <th>Header5</th>
-        <th id="extraHeaders" class="d-none">
-          <span>Header6</span>
-          <span>Header7</span>
-          <span>Header8</span>
-          <span>Header9</span>
-          <span>Header10</span>
-        </th>
+        <th>Column 1</th>
+        <th>Column 2</th>
+        <th>Column 3</th>
         <th>
-          <button class="btn btn-primary" type="button" onclick="toggleAccordion(this)">
+          Column 4
+          <button class="btn btn-primary" type="button" onclick="toggleExtraColumns()">
             +
           </button>
         </th>
+        <th>Column 5</th>
       </tr>
     </thead>
     <tbody>
-      <!-- Example Static Data Row -->
+      <!-- Dynamic Data Rows -->
+      {% for row in table_data %}
       <tr>
-        <td data-hover-text="Extra 1">Extra 1</td>
-        <td data-hover-text="Extra 2">Extra 2</td>
-        <td data-hover-text="Extra 3">Extra 3</td>
-        <td data-hover-text="Extra 4">Extra 4</td>
-        <td data-hover-text="Extra 5">Extra 5</td>
-        <td class="extraData d-none" colspan="5">
-          <!-- Expanded content will be loaded here dynamically -->
+        <td>{{ row.col1 }}</td>
+        <td>{{ row.col2 }}</td>
+        <td>{{ row.col3 }}</td>
+        <td class="extra-column" colspan="5">
+          <td>{{ row.extra1 }}</td>
+          <td>{{ row.extra2 }}</td>
+          <td>{{ row.extra3 }}</td>
+          <td>{{ row.extra4 }}</td>
+          <td>{{ row.extra5 }}</td>
         </td>
+        <td>{{ row.col4 }}</td>
+        <td>{{ row.col5 }}</td>
       </tr>
+      {% endfor %}
     </tbody>
   </table>
 </div>
 
 <script>
-  function toggleAccordion(button) {
-    var extraHeaders = document.getElementById('extraHeaders');
-    var extraData = document.querySelectorAll('.extraData');
+  function toggleExtraColumns() {
+    var extraColumnsRow = document.querySelector('.extra-column');
+    var button = document.querySelector('.accordion-header button');
 
     if (button.textContent === '+') {
       button.textContent = '-';
-      extraHeaders.classList.remove('d-none');
-      extraData.forEach(function(td) {
-        td.classList.remove('d-none');
-      });
-      // Fetch data from Django here and append to the extra columns
-      // Example using fetch:
-      fetch('/path/to/your/django/view/')
-        .then(response => response.json())
-        .then(data => {
-          extraData.forEach(function(td) {
-            td.innerHTML = `
-              <table class="table">
-                <tr>
-                  <td>${data.content6}</td>
-                  <td>${data.content7}</td>
-                  <td>${data.content8}</td>
-                  <td>${data.content9}</td>
-                  <td>${data.content10}</td>
-                </tr>
-              </table>
-            `;
-          });
-        });
+      extraColumnsRow.style.display = 'table-row';
     } else {
       button.textContent = '+';
-      extraHeaders.classList.add('d-none');
-      extraData.forEach(function(td) {
-        td.classList.add('d-none');
-      });
+      extraColumnsRow.style.display = 'none';
     }
   }
 </script>
