@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accordion with Table</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Remove border lines from all tables */
+    .table,
+    .table td,
+    .table th {
+      border: none;
+    }
+
+    /* Reduce space between td elements and add padding-bottom */
+    .table td,
+    .table th {
+      padding-bottom: 1px;
+      white-space: nowrap; /* Prevent text wrap */
+    }
+
+    .table td:hover,
+    .table th:hover {
+      position: relative;
+    }
+
+    .table td:hover::after,
+    .table th:hover::after {
+      content: attr(data-hover-text);
+      position: absolute;
+      left: 0;
+      top: 100%;
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 5px;
+      white-space: nowrap;
+      z-index: 1000;
+      display: block;
+    }
+
+    .accordion-collapse {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+    }
+
+    .accordion-collapse.show {
+      max-height: 1000px; /* Adjust to your preference */
+    }
+
+    .accordion-header button {
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .accordion-header button.collapsed {
+      transform: rotate(180deg);
+    }
+  </style>
+</head>
+<body>
+
+<div class="accordion accordion-flush" id="accordionFlushExample">
+  <table class="table">
+    <!-- Table Headers -->
+    <thead>
+      <tr>
+        <th>Header1</th>
+        <th>Header2</th>
+        <th>Header3</th>
+        <th>Header4</th>
+        <th>Header5</th>
+        <th id="extraHeaders" class="d-none">
+          <span>Header6</span>
+          <span>Header7</span>
+          <span>Header8</span>
+          <span>Header9</span>
+          <span>Header10</span>
+        </th>
+        <th>
+          <button class="btn btn-primary" type="button" onclick="toggleAccordion(this)">
+            +
+          </button>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Example Static Data Row -->
+      <tr>
+        <td data-hover-text="Extra 1">Extra 1</td>
+        <td data-hover-text="Extra 2">Extra 2</td>
+        <td data-hover-text="Extra 3">Extra 3</td>
+        <td data-hover-text="Extra 4">Extra 4</td>
+        <td data-hover-text="Extra 5">Extra 5</td>
+        <td class="extraData d-none" colspan="5">
+          <!-- Expanded content will be loaded here dynamically -->
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  function toggleAccordion(button) {
+    var extraHeaders = document.getElementById('extraHeaders');
+    var extraData = document.querySelectorAll('.extraData');
+
+    if (button.textContent === '+') {
+      button.textContent = '-';
+      extraHeaders.classList.remove('d-none');
+      extraData.forEach(function(td) {
+        td.classList.remove('d-none');
+      });
+      // Fetch data from Django here and append to the extra columns
+      // Example using fetch:
+      fetch('/path/to/your/django/view/')
+        .then(response => response.json())
+        .then(data => {
+          extraData.forEach(function(td) {
+            td.innerHTML = `
+              <table class="table">
+                <tr>
+                  <td>${data.content6}</td>
+                  <td>${data.content7}</td>
+                  <td>${data.content8}</td>
+                  <td>${data.content9}</td>
+                  <td>${data.content10}</td>
+                </tr>
+              </table>
+            `;
+          });
+        });
+    } else {
+      button.textContent = '+';
+      extraHeaders.classList.add('d-none');
+      extraData.forEach(function(td) {
+        td.classList.add('d-none');
+      });
+    }
+  }
+</script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
