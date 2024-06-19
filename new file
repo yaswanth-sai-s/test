@@ -247,5 +247,159 @@ v2
 </body>
 </html>
 
+v4
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expandable Table</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Remove border lines from all tables */
+    .table,
+    .table td,
+    .table th {
+      border: none;
+    }
+
+    /* Reduce space between td elements and add padding-bottom */
+    .table td,
+    .table th {
+      padding-bottom: 1px;
+      white-space: nowrap; /* Prevent text wrap */
+      position: relative; /* Enable positioning for hover text */
+    }
+
+    .table td:hover::after,
+    .table th:hover::after {
+      content: attr(data-hover-text);
+      position: absolute;
+      left: 0;
+      top: 100%;
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 5px;
+      white-space: nowrap;
+      z-index: 1000;
+      display: block;
+    }
+
+    .extra-column {
+      display: none; /* Initially hide extra columns */
+    }
+
+    .accordion-header button {
+      transition: transform 0.3s ease-in-out;
+      display: block;
+      margin: 0 auto; /* Center align the button within the th */
+    }
+
+    .accordion-header button.collapsed {
+      transform: rotate(180deg);
+    }
+  </style>
+</head>
+<body>
+
+<div class="accordion accordion-flush" id="accordionFlushExample">
+  <table class="table">
+    <!-- Define column widths -->
+    <colgroup>
+      <col style="width: 10%">
+      <col style="width: 10%">
+      <col style="width: 10%">
+      <col style="width: 10%">
+      <col class="extra-column" style="width: 10%">
+      <col class="extra-column" style="width: 10%">
+      <col class="extra-column" style="width: 10%">
+      <col class="extra-column" style="width: 10%">
+      <col class="extra-column" style="width: 10%">
+      <col style="width: 10%">
+    </colgroup>
+
+    <!-- Table Headers -->
+    <thead>
+      <tr>
+        <th>Column 1</th>
+        <th>Column 2</th>
+        <th>Column 3</th>
+        <th class="accordion-header">
+          Column 4
+          <button class="btn btn-primary" type="button" onclick="toggleExtraColumns(this)">
+            +
+          </button>
+        </th>
+        <th class="extra-column">Column 6</th>
+        <th class="extra-column">Column 7</th>
+        <th class="extra-column">Column 8</th>
+        <th class="extra-column">Column 9</th>
+        <th class="extra-column">Column 10</th>
+        <th>Column 5</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Static Data Rows -->
+      <tr>
+        <td>Data 1.1</td>
+        <td>Data 1.2</td>
+        <td>Data 1.3</td>
+        <td>Data 1.4</td>
+        <td class="extra-column">Data 1.6</td>
+        <td class="extra-column">Data 1.7</td>
+        <td class="extra-column">Data 1.8</td>
+        <td class="extra-column">Data 1.9</td>
+        <td class="extra-column">Data 1.10</td>
+        <td>Data 1.5</td>
+      </tr>
+      <tr>
+        <td>Data 2.1</td>
+        <td>Data 2.2</td>
+        <td>Data 2.3</td>
+        <td>Data 2.4</td>
+        <td class="extra-column">Data 2.6</td>
+        <td class="extra-column">Data 2.7</td>
+        <td class="extra-column">Data 2.8</td>
+        <td class="extra-column">Data 2.9</td>
+        <td class="extra-column">Data 2.10</td>
+        <td>Data 2.5</td>
+      </tr>
+      <tr>
+        <td>Data 3.1</td>
+        <td>Data 3.2</td>
+        <td>Data 3.3</td>
+        <td>Data 3.4</td>
+        <td class="extra-column">Data 3.6</td>
+        <td class="extra-column">Data 3.7</td>
+        <td class="extra-column">Data 3.8</td>
+        <td class="extra-column">Data 3.9</td>
+        <td class="extra-column">Data 3.10</td>
+        <td>Data 3.5</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  function toggleExtraColumns(button) {
+    var extraColumns = document.querySelectorAll('.extra-column'); // Select all extra columns
+
+    // Check if columns are currently hidden or visible
+    var isHidden = Array.from(extraColumns).every(column => column.style.display === 'none' || column.style.display === '');
+
+    // Toggle visibility of extra columns
+    extraColumns.forEach(function(column) {
+      column.style.display = isHidden ? 'table-cell' : 'none';
+    });
+
+    // Toggle button text and class for collapsed/expanded state
+    button.textContent = isHidden ? '-' : '+';
+    button.classList.toggle('collapsed', !isHidden);
+  }
+</script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
 
