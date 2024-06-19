@@ -296,3 +296,179 @@ def my_view(request):
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
+
+
+v2
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accordion with Table</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Remove border lines from all tables */
+    .table,
+    .table td,
+    .table th {
+      border: none;
+    }
+
+    .accordion-collapse {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+    }
+
+    .accordion-collapse.show {
+      max-height: 1000px; /* Adjust to your preference */
+    }
+
+    .accordion-header button {
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .accordion-header button.collapsed {
+      transform: rotate(180deg);
+    }
+
+    /* Reduce space between table cells */
+    .table td, .table th {
+      padding-bottom: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100px; /* Adjust as needed */
+    }
+
+    .table td:hover, .table th:hover {
+      overflow: visible;
+      white-space: normal;
+    }
+
+    .table td, .table th {
+      height: 50px; /* Ensure consistent height */
+    }
+  </style>
+</head>
+<body>
+
+<div class="accordion accordion-flush" id="accordionFlushExample">
+  <table class="table" id="accordionTable">
+    <!-- Accordion items will be inserted here by JavaScript -->
+  </table>
+</div>
+
+<script>
+  // Function to fetch accordion data from the server
+  async function fetchAccordionData() {
+    try {
+      const response = await fetch('/api/accordion-data');
+      const data = await response.json();
+      createAccordionItems(data);
+    } catch (error) {
+      console.error('Error fetching accordion data:', error);
+    }
+  }
+
+  // Function to create accordion items
+  function createAccordionItems(data) {
+    const accordionTable = document.getElementById('accordionTable');
+    data.forEach((item, index) => {
+      if (item.dataA === 'data1') {
+        const collapseId = `collapse${index + 1}`;
+        const headersHtml = `
+          <td title="${item.dataA}">${item.dataA}</td>
+          <td title="${item.dataB}">${item.dataB}</td>
+          <td title="${item.dataC}">${item.dataC}</td>
+          <td title="${item.dataD}">${item.dataD}</td>
+          <td>
+            <button class="btn btn-primary" type="button" onclick="toggleAccordion('${collapseId}', this)">
+              +
+            </button>
+          </td>
+        `;
+        const contentsHtml = `
+          <tr>
+            <td>${item.dataA}</td>
+            <td>${item.dataB}</td>
+            <td>${item.dataC}</td>
+            <td>${item.dataD}</td>
+          </tr>
+        `;
+
+        const accordionHtml = `
+          <tr class="accordion-header" id="flush-heading${index + 1}">
+            ${headersHtml}
+          </tr>
+          <tr class="accordion-collapse" id="${collapseId}" aria-labelledby="flush-heading${index + 1}" data-bs-parent="#accordionFlushExample">
+            <td colspan="5">
+              <table class="table">
+                ${contentsHtml}
+              </table>
+            </td>
+          </tr>
+        `;
+
+        accordionTable.insertAdjacentHTML('beforeend', accordionHtml);
+      }
+    });
+  }
+
+  function toggleAccordion(collapseId, button) {
+    var collapseElement = document.getElementById(collapseId);
+    var allCollapseElements = document.querySelectorAll('.accordion-collapse');
+    var allButtons = document.querySelectorAll('.accordion-header button');
+
+    // Close all other accordion items
+    allCollapseElements.forEach(function(item) {
+      if (item.id !== collapseId) {
+        item.style.transition = 'max-height 0.2s ease-out'; // Set closing transition
+        item.classList.remove('show');
+        item.style.maxHeight = item.scrollHeight + 'px'; // Set to current height for smooth collapse
+        setTimeout(() => {
+          item.style.maxHeight = '0px';
+        }, 10); // Allow time for DOM update for animation
+      }
+    });
+
+    // Reset all other buttons to +
+    allButtons.forEach(function(btn) {
+      if (btn !== button) {
+        btn.textContent = '+';
+        btn.classList.add('collapsed');
+      }
+    });
+
+    // Toggle the clicked accordion item
+    collapseElement.classList.toggle('show');
+
+    // Toggle the button text and state
+    var collapsed = !collapseElement.classList.contains('show');
+    button.textContent = collapsed ? '+' : '-';
+    button.classList.toggle('collapsed', collapsed);
+
+    // Set transition for opening and closing
+    if (collapseElement.classList.contains('show')) {
+      collapseElement.style.transition = 'max-height 0.3s ease-out'; // Set opening transition
+      collapseElement.style.maxHeight = collapseElement.scrollHeight + 'px';
+    } else {
+      collapseElement.style.transition = 'max-height 0.2s ease-out'; // Set closing transition
+      collapseElement.style.maxHeight = collapseElement.scrollHeight + 'px'; // Set to current height for smooth collapse
+      setTimeout(() => {
+        collapseElement.style.maxHeight = '0px';
+      }, 10); // Allow time for DOM update for animation
+    }
+  }
+
+  // Initialize accordion items by fetching data from the server
+  fetchAccordionData();
+</script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
