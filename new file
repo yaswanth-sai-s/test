@@ -36,7 +36,7 @@
     }
 
     .extra-column {
-      display: none;
+      display: none; /* Initially hide extra columns */
     }
 
     .accordion-header button {
@@ -66,6 +66,11 @@
             +
           </button>
         </th>
+        <th class="extra-column">Column 6</th>
+        <th class="extra-column">Column 7</th>
+        <th class="extra-column">Column 8</th>
+        <th class="extra-column">Column 9</th>
+        <th class="extra-column">Column 10</th>
         <th>Column 5</th>
       </tr>
     </thead>
@@ -77,13 +82,17 @@
         <td>{{ row.col2 }}</td>
         <td>{{ row.col3 }}</td>
         <td class="extra-column" colspan="5">
-          <td>{{ row.extra1 }}</td>
-          <td>{{ row.extra2 }}</td>
-          <td>{{ row.extra3 }}</td>
-          <td>{{ row.extra4 }}</td>
-          <td>{{ row.extra5 }}</td>
+          <td>{{ row.extra6 }}</td>
+          <td>{{ row.extra7 }}</td>
+          <td>{{ row.extra8 }}</td>
+          <td>{{ row.extra9 }}</td>
+          <td>{{ row.extra10 }}</td>
         </td>
-        <td>{{ row.col4 }}</td>
+        <td>{{ row.col6 }}</td>
+        <td>{{ row.col7 }}</td>
+        <td>{{ row.col8 }}</td>
+        <td>{{ row.col9 }}</td>
+        <td>{{ row.col10 }}</td>
         <td>{{ row.col5 }}</td>
       </tr>
       {% endfor %}
@@ -93,15 +102,22 @@
 
 <script>
   function toggleExtraColumns() {
-    var extraColumnsRow = document.querySelector('.extra-column');
+    var extraColumns = document.querySelectorAll('.extra-column'); // Select all extra columns
+
+    // Toggle visibility of extra columns
+    extraColumns.forEach(function(column) {
+      column.classList.toggle('d-none'); // Toggle Bootstrap's d-none class to hide/show
+    });
+
     var button = document.querySelector('.accordion-header button');
 
+    // Toggle button text and class for collapsed/expanded state
     if (button.textContent === '+') {
       button.textContent = '-';
-      extraColumnsRow.style.display = 'table-row';
+      button.classList.add('collapsed');
     } else {
       button.textContent = '+';
-      extraColumnsRow.style.display = 'none';
+      button.classList.remove('collapsed');
     }
   }
 </script>
