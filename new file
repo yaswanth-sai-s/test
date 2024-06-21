@@ -556,3 +556,136 @@ v4
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
+hover text
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expandable Table</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Remove border lines from all tables */
+    .table {
+      width: 100%;
+      border-collapse: collapse; /* Remove space between cells */
+      table-layout: fixed; /* Ensure fixed table layout */
+    }
+
+    .table th,
+    .table td {
+      padding: 8px; /* Adjust padding as needed */
+      text-align: left;
+      border: 1px solid #ccc;
+      white-space: nowrap; /* Prevent text wrap */
+      overflow: hidden; /* Hide overflow text */
+      text-overflow: ellipsis; /* Show ellipsis for overflow text */
+    }
+
+    .extra-column {
+      display: none; /* Initially hide extra columns */
+    }
+
+    .accordion-header button {
+      transition: transform 0.3s ease-in-out;
+      display: block;
+      margin: 0 auto; /* Center align the button within the th */
+    }
+
+    .accordion-header button.collapsed {
+      transform: rotate(180deg);
+    }
+  </style>
+</head>
+<body>
+
+<div class="accordion accordion-flush" id="accordionFlushExample">
+  <table class="table">
+    <colgroup>
+      <col style="width: 10%">
+      <col style="width: 10%">
+      <col style="width: 10%">
+      <col style="width: 10%">
+      <col class="extra-column"> <!-- Initially hidden extra columns -->
+      <col class="extra-column">
+      <col class="extra-column">
+      <col class="extra-column">
+      <col class="extra-column">
+      <col style="width: 10%">
+    </colgroup>
+
+    <thead>
+      <tr>
+        <th>Column 1</th>
+        <th>Column 2</th>
+        <th>Column 3</th>
+        <th class="accordion-header">
+          Column 4
+          <button class="btn btn-primary" type="button" onclick="toggleExtraColumns()">
+            +
+          </button>
+        </th>
+        <th class="extra-column">Column 6</th>
+        <th class="extra-column">Column 7</th>
+        <th class="extra-column">Column 8</th>
+        <th class="extra-column">Column 9</th>
+        <th class="extra-column">Column 10</th>
+        <th>Comments</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in data %}
+      <tr>
+        {% for item in row %}
+        <td class="{% if forloop.counter > 4 and forloop.counter < 10 %}extra-column{% endif %}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ item }}">
+          {{ item|safe }}
+        </td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
+<script>
+  function toggleExtraColumns() {
+    var extraColumns = document.querySelectorAll('.extra-column'); // Select all extra columns
+
+    // Toggle visibility of extra columns
+    extraColumns.forEach(function(column) {
+      column.style.display = column.style.display === 'none' ? 'table-cell' : 'none';
+    });
+
+    // Toggle button class for collapsed/expanded state
+    var button = document.querySelector('.accordion-header button');
+    button.classList.toggle('collapsed');
+    button.textContent = button.classList.contains('collapsed') ? '+' : '-';
+  }
+
+  // Initialize Bootstrap tooltips
+  document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+
+    // Remove <pre> and <code> tags and capitalize comments
+    var commentCells = document.querySelectorAll('td[data-bs-toggle="tooltip"]');
+    commentCells.forEach(function(cell) {
+      var text = cell.innerHTML;
+      // Remove <pre> and <code> tags
+      text = text.replace(/<\/?pre>/gi, '');
+      text = text.replace(/<\/?code>/gi, '');
+      // Capitalize the first letter
+      text = text.charAt(0).toUpperCase() + text.slice(1);
+      cell.innerHTML = text;
+    });
+  });
+</script>
+
+</body>
+</html>
