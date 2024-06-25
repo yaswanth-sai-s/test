@@ -1407,3 +1407,89 @@ $(document).ready(function() {
         }
     }
 });
+
+
+final draft
+var simplemde;
+var firstSubmitClick = true;
+
+document.addEventListener("DOMContentLoaded", function() {
+    simplemde = new SimpleMDE({ element: document.getElementById("comment") });
+
+    function updateCommentBox() {
+        let allChecked = document.querySelectorAll('.check').length === document.querySelectorAll('.check:checked').length;
+        let someChecked = document.querySelectorAll('.check:checked').length > 0;
+        let commentContent = simplemde.value();
+
+        if (allChecked) {
+            // Remove "Partial check" and any unchecked items
+            commentContent = commentContent.replace(/Partial check\n(?:.*?:\n)*/g, '');
+        } else if (someChecked) {
+            // Add "Partial check" and list unchecked items
+            let uncheckedItems = [];
+            document.querySelectorAll('.check').forEach(function(checkbox) {
+                if (!checkbox.checked) {
+                    uncheckedItems.push(checkbox.nextElementSibling.innerText + ':');
+                }
+            });
+            let uncheckedText = 'Partial check\n' + uncheckedItems.join('\n');
+            if (!commentContent.includes('Partial check')) {
+                commentContent += '\n' + uncheckedText;
+            } else {
+                commentContent = commentContent.replace(/Partial check\n(?:.*?:\n)*/g, uncheckedText + '\n');
+            }
+        }
+
+        simplemde.value(commentContent.trim());
+    }
+
+    function validateForm() {
+        let allChecked = document.querySelectorAll('.check').length === document.querySelectorAll('.check:checked').length;
+        let someChecked = document.querySelectorAll('.check:checked').length > 0;
+        let comment = simplemde.value().trim();
+
+        if (allChecked && comment && !comment.match(/^[.,\s]*$/)) {
+            return true;
+        } else if (!someChecked) {
+            alert('Please check at least one checkbox.');
+            return false;
+        } else if (someChecked && (comment.length === 0 || comment.match(/^[.,\s]*$/))) {
+            alert('Please provide a valid comment for the checked items.');
+            return false;
+        } else {
+            return false;
+        }
+    }
+
+    document.querySelectorAll('.check').forEach(function(checkbox) {
+        checkbox.addEventListener('change', updateCommentBox);
+    });
+
+    document.getElementById('selectAll').addEventListener('change', function() {
+        let selectAllChecked = this.checked;
+        document.querySelectorAll('.check').forEach(function(checkbox) {
+            checkbox.checked = selectAllChecked;
+        });
+        updateCommentBox();
+    });
+
+    simplemde.codemirror.on('change', function() {
+        // Perform any actions needed when the comment content changes
+    });
+
+    document.getElementById('submitBtn').addEventListener('click', handleSubmit);
+
+    window.handleSubmit = function() {
+        if (firstSubmitClick) {
+            firstSubmitClick = false;
+            alert('Update comment and Checkboxes');
+        } else {
+            if (validateForm()) {
+                // Perform the actual form submission here
+                alert('Form submitted successfully!');
+            } else {
+                // Validation alerts are handled within validateForm()
+            }
+        }
+    }
+});
