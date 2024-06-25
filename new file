@@ -1250,3 +1250,72 @@ $(document).ready(function() {
         validateForm();
     });
 });
+
+
+ajax v2
+
+
+$(document).ready(function() {
+    var simplemde = new SimpleMDE({ element: $("#comment")[0] });
+
+    function updateCommentBox() {
+        let allChecked = $('.check').length === $('.check:checked').length;
+        let someChecked = $('.check:checked').length > 0;
+        let commentContent = simplemde.value();
+
+        if (allChecked) {
+            // Remove "Partial check" and any unchecked items
+            commentContent = commentContent.replace(/Partial check\n.*?:.*?\n/g, '');
+        } else if (someChecked) {
+            // Add "Partial check" and list unchecked items
+            let uncheckedItems = [];
+            $('.check').each(function() {
+                if (!$(this).is(':checked')) {
+                    uncheckedItems.push($(this).next('label').text() + ':');
+                }
+            });
+            let uncheckedText = 'Partial check\n' + uncheckedItems.join('\n');
+            if (!commentContent.includes('Partial check')) {
+                commentContent += '\n' + uncheckedText;
+            } else {
+                commentContent = commentContent.replace(/Partial check\n.*?:.*?\n/g, uncheckedText + '\n');
+            }
+        }
+
+        simplemde.value(commentContent.trim());
+    }
+
+    function validateForm() {
+        let allChecked = $('.check').length === $('.check:checked').length;
+        let comment = simplemde.value().trim();
+
+        if (allChecked && comment && !comment.match(/^[.,\s]*$/)) {
+            $('#submitBtn').prop('disabled', false);
+        } else {
+            $('#submitBtn').prop('disabled', true);
+        }
+    }
+
+    $('.check').change(function() {
+        updateCommentBox();
+        validateForm();
+    });
+
+    $('#selectAll').change(function() {
+        if ($(this).is(':checked')) {
+            $('.check').prop('checked', true);
+        } else {
+            $('.check').prop('checked', false);
+        }
+        updateCommentBox();
+        validateForm();
+    });
+
+    simplemde.codemirror.on('change', function() {
+        validateForm();
+    });
+
+    $('#submitBtn').click(function() {
+        alert('Update comment and Checkboxes');
+    });
+});
