@@ -1196,3 +1196,57 @@ transition
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
+ajax
+$(document).ready(function() {
+    function validateForm() {
+        let allChecked = $('.check').length === $('.check:checked').length;
+        let someChecked = $('.check:checked').length > 0;
+        let comment = $('#comment').val().trim();
+        let allCommentsValid = true;
+
+        $('#partialCommentSection').empty();
+
+        if (someChecked && !allChecked) {
+            $('#partialCommentSection').append('<p>Partial check</p>');
+            $('.check').each(function() {
+                if (!$(this).is(':checked')) {
+                    $('#partialCommentSection').append(`<p>${$(this).next('label').text()}:</p>`);
+                }
+            });
+        }
+
+        if (someChecked && !comment) {
+            $('#partialCommentSection').append('<p>Please provide comments for all checks</p>');
+            allCommentsValid = false;
+        }
+
+        if (comment.length === 0 || comment.match(/^[.,\s]*$/)) {
+            allCommentsValid = false;
+        }
+
+        if (allChecked && comment && allCommentsValid) {
+            $('#submitBtn').prop('disabled', false);
+        } else {
+            $('#submitBtn').prop('disabled', true);
+        }
+    }
+
+    $('.check').change(function() {
+        validateForm();
+    });
+
+    $('#comment').on('input', function() {
+        validateForm();
+    });
+
+    $('#selectAll').change(function() {
+        if ($(this).is(':checked')) {
+            $('.check').prop('checked', true);
+        } else {
+            $('.check').prop('checked', false);
+        }
+        validateForm();
+    });
+});
