@@ -1703,3 +1703,107 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
+
+
+
+
+Going Crazy
+
+var simplemde;
+var firstSubmitClick = true;
+
+document.addEventListener("DOMContentLoaded", function() {
+    simplemde = new SimpleMDE({ element: document.getElementById("comment") });
+
+    // Function to update comment box based on checkbox status
+    function updateCommentBox() {
+        console.log("updateCommentBox function called"); // Debugging line to ensure function is called
+        let allChecked = document.querySelectorAll('.check').length === document.querySelectorAll('.check:checked').length;
+        let someChecked = document.querySelectorAll('.check:checked').length > 0;
+        let commentContent = '';
+
+        if (allChecked) {
+            // Clear comment content when all checkboxes are checked
+            commentContent = '';
+        } else if (someChecked) {
+            // Add "Partial check" and list unchecked items
+            let uncheckedItems = [];
+            document.querySelectorAll('.check').forEach(function(checkbox) {
+                if (!checkbox.checked) {
+                    uncheckedItems.push(checkbox.nextElementSibling.innerText + ' :');
+                }
+            });
+            commentContent = 'Partially Checked\n' + uncheckedItems.join('\n');
+        }
+
+        simplemde.value(commentContent.trim());
+    }
+
+    // Function to validate form before submission
+    function validateForm() {
+        console.log("validateForm function called"); // Debugging line to ensure function is called
+        let allChecked = document.querySelectorAll('.check').length === document.querySelectorAll('.check:checked').length;
+        let someChecked = document.querySelectorAll('.check:checked').length > 0;
+        let comment = simplemde.value().trim();
+        
+        if (allChecked) {
+            return true;
+        } else if (!someChecked) {
+            alert('Please check at least one checkbox.');
+            return false;
+        } else {
+            // Ensure every unchecked checkbox has a comment
+            let requiredComments = document.querySelectorAll('.check:not(:checked)').length;
+            let providedComments = (comment.match(/:\s*[^:]*/g) || []).length;
+            
+            if (requiredComments === providedComments) {
+                return true;
+            } else {
+                alert('Please provide comments for all unchecked items.');
+                return false;
+            }
+        }
+    }
+
+    // Attach event listeners to checkboxes
+    function attachCheckboxListeners() {
+        document.querySelectorAll('.check').forEach(function(checkbox) {
+            console.log("Adding change event listener to checkbox", checkbox); // Debugging line to ensure listeners are added
+            checkbox.addEventListener('change', updateCommentBox);
+        });
+    }
+
+    // Attach event listener to select all checkbox
+    document.getElementById('selectAll').addEventListener('change', function() {
+        console.log("selectAll checkbox changed"); // Debugging line
+        let selectAllChecked = this.checked;
+        document.querySelectorAll('.check').forEach(function(checkbox) {
+            checkbox.checked = selectAllChecked;
+        });
+        updateCommentBox();
+    });
+
+    // Attach event listener to SimpleMDE content change
+    simplemde.codemirror.on('change', function() {
+        console.log("SimpleMDE content changed"); // Debugging line
+    });
+
+    // Attach event listener to submit button
+    document.getElementById('submitBtn').addEventListener('click', function() {
+        console.log("handleSubmit function called"); // Debugging line
+        if (firstSubmitClick) {
+            firstSubmitClick = false;
+            alert('Update comment and Checkboxes');
+        } else {
+            if (validateForm()) {
+                // Perform the actual form submission here
+                alert('Form submitted successfully!');
+            } else {
+                // Validation alerts are handled within validateForm()
+            }
+        }
+    });
+
+    // Initial call to attach listeners
+    attachCheckboxListeners();
+});
