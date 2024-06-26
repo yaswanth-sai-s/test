@@ -2221,3 +2221,105 @@ document.addEventListener("DOMContentLoaded", function() {
 
     attachCheckboxListeners();
 });
+
+
+hsjiabsbdyd chuckkk
+
+
+var simplemde;
+var firstSubmitClick = true;
+
+document.addEventListener("DOMContentLoaded", function() {
+    simplemde = new SimpleMDE({ element: document.getElementById("comment") });
+
+    function updateCommentBox() {
+        let allChecked = document.querySelectorAll('.check').length === document.querySelectorAll('.check:checked').length;
+        let someChecked = document.querySelectorAll('.check:checked').length > 0;
+        let commentContent = simplemde.value();
+        let uncheckedItems = [];
+
+        if (allChecked) {
+            // Remove "Partial check" and any unchecked items
+            commentContent = commentContent.replace(/Partial check\n(?:.*?:\n)*/g, '');
+        } else if (someChecked) {
+            document.querySelectorAll('.check').forEach(function(checkbox) {
+                if (!checkbox.checked) {
+                    uncheckedItems.push(checkbox.nextElementSibling.innerText + ':');
+                }
+            });
+            let uncheckedText = 'Partial check\n' + uncheckedItems.join('\n');
+            if (!commentContent.includes('Partial check')) {
+                commentContent += '\n' + uncheckedText;
+            } else {
+                commentContent = commentContent.replace(/Partial check\n(?:.*?:\n)*/g, uncheckedText + '\n');
+            }
+        }
+
+        simplemde.value(commentContent.trim());
+    }
+
+    function validateForm() {
+        let allChecked = document.querySelectorAll('.check').length === document.querySelectorAll('.check:checked').length;
+        let someChecked = document.querySelectorAll('.check:checked').length > 0;
+        let comment = simplemde.value().trim();
+
+        // Regex to find incomplete comments for checkbox values
+        let incompleteComments = [];
+        document.querySelectorAll('.check').forEach(function(checkbox) {
+            if (!checkbox.checked) {
+                let label = checkbox.nextElementSibling.innerText;
+                let regex = new RegExp(`${label}\\s*:\\s*(?!not required|no need check).*`, 'g');
+                if (regex.test(comment)) {
+                    incompleteComments.push(label);
+                }
+            }
+        });
+
+        if (allChecked) {
+            if (comment.includes('Partial check')) {
+                alert('All items are checked but there are partial check comments.');
+                return false;
+            } else {
+                return true;
+            }
+        } else if (!someChecked) {
+            alert('Please check at least one checkbox.');
+            return false;
+        } else if (incompleteComments.length > 0) {
+            alert('Provide comments for unchecked checkboxes: ' + incompleteComments.join(', '));
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    // Attach event listeners to checkboxes
+    function attachCheckboxListeners() {
+        document.querySelectorAll('.check').forEach(function(checkbox) {
+            checkbox.addEventListener('change', updateCommentBox);
+        });
+    }
+
+    document.getElementById('selectAll').addEventListener('change', function() {
+        let selectAllChecked = this.checked;
+        document.querySelectorAll('.check').forEach(function(checkbox) {
+            checkbox.checked = selectAllChecked;
+        });
+        updateCommentBox();
+    });
+
+    simplemde.codemirror.on('change', function() {});
+
+    document.getElementById('submitBtn').addEventListener('click', function() {
+        if (firstSubmitClick) {
+            firstSubmitClick = false;
+            alert('Update comment and Checkboxes');
+        } else {
+            if (validateForm()) {
+                alert('Form submitted successfully!');
+            }
+        }
+    });
+
+    attachCheckboxListeners();
+});
