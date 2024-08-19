@@ -4,7 +4,7 @@ $("#selectAll").click(function() {
 });
 
 $("input[type=checkbox]").not("#check1").click(function() {
-    // If any checkbox except 'check1' is unchecked, uncheck 'selectAll'
+    // Uncheck 'selectAll' if any checkbox except 'check1' is unchecked
     if (!$(this).prop("checked")) {
         $("#selectAll").prop("checked", false);
     }
