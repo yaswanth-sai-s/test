@@ -4,15 +4,13 @@ $(document).ready(function() {
         // Check or uncheck all checkboxes except the one with id 'check1'
         $("input[type=checkbox]").not("#check1").prop("checked", this.checked);
     });
+});
 
-    // When any checkbox except 'check1' is clicked
-    $("input[type=checkbox]").not("#check1").click(function() {
-        // If all checkboxes except 'check1' are checked, then check 'selectAll'
-        if ($("input[type=checkbox]").not("#check1").length === $("input[type=checkbox]:checked").not("#check1").length) {
-            $("#selectAll").prop("checked", true);
-        } else {
-            // Otherwise, uncheck 'selectAll'
-            $("#selectAll").prop("checked", false);
-        }
+
+$(document).ready(function() {
+    // When the 'selectAll' checkbox is clicked
+    $("#selectAll").click(function() {
+        // Toggle all checkboxes based on the 'selectAll' checkbox state
+        $("input[type=checkbox]").prop("checked", this.checked);
     });
 });
