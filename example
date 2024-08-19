@@ -3,14 +3,26 @@ $(document).ready(function() {
     $("#selectAll").click(function() {
         // Set the checked status of all checkboxes except the one with id 'check1'
         $("input[type=checkbox]").not("#check1").prop("checked", this.checked);
+        
+        // Debugging: Print the status of all checkboxes
+        console.log("After clicking #selectAll:");
+        $("input[type=checkbox]").each(function() {
+            console.log($(this).attr("id") + " is checked: " + $(this).prop("checked"));
+        });
     });
 
     // When any checkbox except 'check1' is clicked
     $("input[type=checkbox]").not("#check1").click(function() {
         // Check if all checkboxes except 'check1' are checked
         var allChecked = $("input[type=checkbox]").not("#check1").length === $("input[type=checkbox]:not(#check1):checked").length;
-
+        
         // Set the checked status of 'selectAll' based on whether all other checkboxes are checked
         $("#selectAll").prop("checked", allChecked);
+
+        // Debugging: Print the status of all checkboxes
+        console.log("After clicking a checkbox:");
+        $("input[type=checkbox]").each(function() {
+            console.log($(this).attr("id") + " is checked: " + $(this).prop("checked"));
+        });
     });
 });
