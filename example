@@ -1,16 +1,10 @@
-$(document).ready(function() {
-    // When the 'selectAll' checkbox is clicked
-    $("#selectAll").click(function() {
-        // Check or uncheck all checkboxes except the one with id 'check1'
-        $("input[type=checkbox]").not("#check1").prop("checked", this.checked);
-    });
+$("#selectAll").click(function(){
+    $("input[type=checkbox]").prop("checked", $(this).prop("checked"));
 });
 
-
-$(document).ready(function() {
-    // When the 'selectAll' checkbox is clicked
-    $("#selectAll").click(function() {
-        // Toggle all checkboxes based on the 'selectAll' checkbox state
-        $("input[type=checkbox]").prop("checked", this.checked);
-    });
-});
+// Remove the following function entirely to disable the uncheck-all functionality
+// $("input[type=checkbox]").click(function() {
+//     if (!$(this).prop("checked")) {
+//         $("#selectAll").prop("checked", false);
+//     }
+// });
