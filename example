@@ -1,15 +1,15 @@
 $("#selectAll").click(function() {
-    // Check or uncheck all checkboxes except #check1
+    // Check or uncheck all checkboxes except the one with id 'check1'
     $("input[type=checkbox]").not("#check1").prop("checked", $(this).prop("checked"));
 });
 
-$("input[type=checkbox]").click(function() {
-    // If any checkbox other than #check1 is unchecked, uncheck #selectAll
-    if ($(this).attr("id") !== "check1" && !$(this).prop("checked")) {
+$("input[type=checkbox]").not("#check1").click(function() {
+    // If any checkbox except 'check1' is unchecked, uncheck 'selectAll'
+    if (!$(this).prop("checked")) {
         $("#selectAll").prop("checked", false);
     }
     
-    // Check if all checkboxes except #check1 are checked, then check #selectAll
+    // If all checkboxes except 'check1' are checked, check 'selectAll'
     if ($("input[type=checkbox]").not("#check1").length === $("input[type=checkbox]:checked").not("#check1").length) {
         $("#selectAll").prop("checked", true);
     }
