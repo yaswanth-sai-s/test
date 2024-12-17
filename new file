@@ -72,3 +72,40 @@ urlpatterns = [
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
+
+
+admin pannel 
+
+(function ($) {
+    $(document).ready(function () {
+        const genderField = $('#id_gender');
+        const nameField = $('#id_name');
+
+        const options = {
+            male: ['raju', 'ramu'],
+            female: ['rani'],
+        };
+
+        function updateNameOptions() {
+            const selectedGender = genderField.val();
+            const names = options[selectedGender] || [];
+
+            // Clear existing options
+            nameField.find('option').remove();
+
+            // Add a blank option
+            nameField.append('<option value="">---------</option>');
+
+            // Add new options
+            names.forEach(name => {
+                nameField.append(`<option value="${name}">${name.charAt(0).toUpperCase() + name.slice(1)}</option>`);
+            });
+        }
+
+        // Trigger update on gender change
+        genderField.change(updateNameOptions);
+
+        // Initialize on page load
+        updateNameOptions();
+    });
+})(django.jQuery);
